@@ -1,4 +1,6 @@
+'use client'
 import {FC} from 'react'
+import {motion, AnimatePresence, Variants} from 'framer-motion'
 import article_1 from '@/public/images/article_1.png'
 import article_2 from '@/public/images/article_2.png'
 import article_3 from '@/public/images/article_3.png'
@@ -7,7 +9,6 @@ import article_5 from '@/public/images/article_5.png'
 import article_6 from '@/public/images/article_6.png'
 import magazine_cover from '@/public/images/magazin-cover.png'
 import Image, {StaticImageData} from 'next/image'
-import Link from 'next/link'
 import LinkWithSVG from '../../shared/LinkWithSVG'
 
 const articles = [
@@ -88,35 +89,110 @@ const most_popular = [
   },
 ]
 
+// Animation variants
+const itemVariants: Variants = {
+  hidden: {opacity: 0, y: 50},
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const magazineVariants: Variants = {
+  hidden: {opacity: 0, scale: 0.8},
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const newsletterVariants: Variants = {
+  hidden: {opacity: 0, x: 50},
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const lineVariants: Variants = {
+  hidden: {scaleX: 0, originX: 0},
+  visible: {
+    scaleX: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.87, 0, 0.13, 1],
+    },
+  },
+}
+
 const ArticlesSection = () => {
   return (
     <section className="pt-12">
       <div className="wrapper flex gap-24">
         <div className="w-3/4">
-          {articles.map((article, index) => (
-            <ArticleRow
-              key={index}
-              {...article}
-              isFirst={index === 0}
-              isLast={index === articles.length - 1}
-            />
-          ))}
+          <AnimatePresence>
+            {articles.map((article, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{once: true, amount: 0.3}}
+              >
+                <ArticleRow
+                  {...article}
+                  isFirst={index === 0}
+                  isLast={index === articles.length - 1}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
 
-          <div className='mt-24'>
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{once: true, amount: 0.3}}
+            className="mt-24"
+          >
             <LinkWithSVG href="/articles" text="All articles" />
-          </div>
+          </motion.div>
         </div>
         <div className="w-1/4">
-          <div className="space-y-2 mb-8">
+          <motion.div
+            className="space-y-2 mb-8"
+            initial={{opacity: 0, y: 20}}
+            whileInView={{opacity: 1, y: 0}}
+            transition={{duration: 0.5}}
+            viewport={{once: true, amount: 0.3}}
+          >
             <h3 className="font-semibold text-base uppercase">Printmagazine</h3>
             <h2 className="text-[3rem] font-semibold leading-[120%]">03/2022</h2>
-          </div>
+          </motion.div>
 
-          <div className="space-y-4 mb-16">
+          <motion.div
+            className="space-y-4 mb-16"
+            variants={magazineVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{once: true, amount: 0.3}}
+          >
             <div className="max-w-[23.0625rem] max-h-[28.82813rem] overflow-hidden">
               <Image
                 src={magazine_cover}
-                alt="margazine cover"
+                alt="magazine cover"
                 className="object-contain w-full h-full"
                 quality={100}
               />
@@ -127,24 +203,37 @@ const ArticlesSection = () => {
             >
               Button
             </button>
-          </div>
+          </motion.div>
 
           <div className="space-y-8">
             <h3 className="font-semibold text-base uppercase">Most Popular</h3>
             <div>
               {most_popular.map((article, index) => (
-                <MostPopularArticleRow
+                <motion.div
                   key={index}
-                  {...article}
-                  isLast={index === most_popular.length - 1}
-                  isFirst={index === 0}
-                  position={index + 1}
-                />
+                  variants={itemVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{once: true, amount: 0.3}}
+                >
+                  <MostPopularArticleRow
+                    {...article}
+                    isLast={index === most_popular.length - 1}
+                    isFirst={index === 0}
+                    position={index + 1}
+                  />
+                </motion.div>
               ))}
             </div>
           </div>
 
-          <form className="p-[1.875rem] bg-off-white mt-16">
+          <motion.form
+            className="p-[1.875rem] bg-off-white mt-16"
+            variants={newsletterVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{once: true, amount: 0.3}}
+          >
             <h3 className="font-semibold text-base uppercase mb-2">NewsLetter</h3>
             <h2 className="text-[2rem] font-semibold leading-[130%] mb-4">
               Design News to your inbox
@@ -160,7 +249,7 @@ const ArticlesSection = () => {
             >
               Sign up
             </button>
-          </form>
+          </motion.form>
         </div>
       </div>
     </section>
@@ -182,9 +271,8 @@ const ArticleRow: FC<{
 }> = ({thumbnail, title, excerpt, publishedAt, author, duration, category, isFirst, isLast}) => {
   return (
     <article
-      className="flex gap-12"
+      className="flex gap-12 relative"
       style={{
-        borderBottom: !isLast ? '1px solid #000' : 'none',
         paddingTop: isFirst ? '0' : '3rem',
         paddingBottom: isLast ? '0' : '3rem',
       }}
@@ -219,6 +307,15 @@ const ArticleRow: FC<{
           </div>
         </div>
       </div>
+      {!isLast && (
+        <motion.div
+          className="absolute bottom-0 left-0 w-full h-[1px] bg-black"
+          variants={lineVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{once: true, amount: 0.5}}
+        />
+      )}
     </article>
   )
 }
@@ -232,9 +329,8 @@ const MostPopularArticleRow: FC<{
 }> = ({title, author, position, isFirst, isLast}) => {
   return (
     <article
-      className="flex gap-4"
+      className="flex gap-4 relative"
       style={{
-        borderBottom: !isLast ? '1px solid #000' : 'none',
         paddingTop: isFirst ? '0' : '1.5rem',
         paddingBottom: isLast ? '0' : '1.5rem',
       }}
@@ -247,6 +343,15 @@ const MostPopularArticleRow: FC<{
           {author}
         </p>
       </div>
+      {!isLast && (
+        <motion.div
+          className="absolute bottom-0 left-0 w-full h-[1px] bg-black"
+          variants={lineVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{once: true, amount: 0.5}}
+        />
+      )}
     </article>
   )
 }

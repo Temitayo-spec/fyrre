@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+import React, {useEffect, useRef} from 'react'
+import {motion, Variants} from 'framer-motion'
 import Marquee from 'react-fast-marquee'
 import instagram from '@/public/svgs/instagram.svg'
 import twitter from '@/public/svgs/twitter.svg'
@@ -7,40 +9,235 @@ import rss from '@/public/svgs/rss.svg'
 import Link from 'next/link'
 import Image from 'next/image'
 
+const containerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const marqueeVariants: Variants = {
+  hidden: {opacity: 0, x: -100},
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const footerContentVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.3,
+      delayChildren: 0.4,
+    },
+  },
+}
+
+const footerSectionVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const linkVariants: Variants = {
+  hidden: {opacity: 0, y: 20},
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const socialVariants: Variants = {
+  hidden: {opacity: 0, scale: 0.8},
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const socialContainerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+}
+
 const Footer = () => {
+  const footerTextRef = useRef<HTMLHeadingElement>(null)
+  const hasAnimated = useRef(false)
+
+  useEffect(() => {
+    const initGSAPAnimation = async () => {
+      if (hasAnimated.current || !footerTextRef.current) return
+
+      try {
+        const gsap = (await import('gsap')).default
+        const {SplitText} = await import('gsap/SplitText')
+
+        gsap.registerPlugin(SplitText)
+
+        const heroHeading = new SplitText(footerTextRef.current, {
+          type: 'lines,words,chars',
+          linesClass: 'split-line',
+          wordsClass: 'split-word',
+          charsClass: 'split-char',
+        })
+
+        gsap.set(footerTextRef.current, {perspective: 400})
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: footerTextRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        })
+
+        tl.from(heroHeading.words, {
+          opacity: 0,
+          y: 100,
+          rotateX: -90,
+          stagger: {
+            each: 0.05,
+            from: 'start',
+          },
+          duration: 1,
+          ease: 'back.out(1.7)',
+        })
+
+        hasAnimated.current = true
+      } catch (error) {
+        console.log('GSAP not available, using Framer Motion fallback')
+      }
+    }
+
+    initGSAPAnimation()
+  }, [])
+
   return (
-    <footer className="bg-black text-white flex flex-col gap-32 pb-[4.06rem]">
-      <div className="p-5">
-        <Marquee className="">
-          {Array.from({length: 10}).map((_, index) => (
-            <p className="text-[1.375rem] text-white mr-6 uppercase font-semibold" key={index}>
-              Newsletter+++
-            </p>
-          ))}
-        </Marquee>
-      </div>
+    <footer className="bg-black text-white">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{once: true, amount: 0.2}}
+        className="flex flex-col gap-32 pb-[4.06rem]"
+      >
+        <motion.div className="p-5" variants={marqueeVariants}>
+          <Marquee>
+            {Array.from({length: 10}).map((_, index) => (
+              <p className="text-[1.375rem] text-white mr-6 uppercase font-semibold" key={index}>
+                Newsletter+++
+              </p>
+            ))}
+          </Marquee>
+        </motion.div>
 
-      <div className="wrapper flex items-center justify-between gap-6">
-        <h2 className="max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2">
-          Design News to your inbox
-        </h2>
-
-        <form action="#" className="flex items-center gap-3">
-          <input
-            type="email"
-            placeholder="Email"
-            className="max-w-[19.3125rem] min-h-[3.125rem] w-full py-2 px-[0.9375rem] bg-white placeholder:text-black text-black"
-          />
-          <button
-            type="submit"
-            className="min-h-[3.125rem] bg-white py-1 px-6 border border-white hover:bg-transparent hover:text-white transition-colors duration-200 flex items-center justify-center text-black uppercase text-sm font-medium flex-shrink-0"
+        <motion.div
+          className="wrapper flex items-center justify-between gap-6"
+          variants={footerContentVariants}
+        >
+          <h2
+            ref={footerTextRef}
+            className="split_hero_text max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2"
           >
-            Sign Up
-          </button>
-        </form>
-      </div>
+            Design News to your inbox
+          </h2>
 
-      <FooterBottom />
+          <motion.h2
+            className="gsap-fallback max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2"
+            variants={{
+              hidden: {opacity: 0},
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.05,
+                  delayChildren: 0.2,
+                },
+              },
+            }}
+            style={{display: 'none'}}
+          >
+            {'Design News to your inbox'.split(' ').map((word, index) => (
+              <motion.span
+                key={index}
+                className="inline-block mr-[0.5em] overflow-hidden"
+                variants={{
+                  hidden: {y: '100%', rotateX: -90},
+                  visible: {
+                    y: '0%',
+                    rotateX: 0,
+                    transition: {
+                      duration: 0.8,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                    },
+                  },
+                }}
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h2>
+
+          <motion.form
+            action="#"
+            className="flex items-center gap-3"
+            variants={{
+              hidden: {opacity: 0, x: 50},
+              visible: {
+                opacity: 1,
+                x: 0,
+                transition: {
+                  duration: 0.6,
+                  ease: 'easeOut',
+                  delay: 0.4,
+                },
+              },
+            }}
+          >
+            <motion.input
+              type="email"
+              placeholder="Email"
+              className="max-w-[19.3125rem] min-h-[3.125rem] w-full py-2 px-[0.9375rem] bg-white placeholder:text-black text-black"
+              whileHover={{scale: 1.02}}
+              transition={{duration: 0.3, ease: 'easeOut'}}
+            />
+            <motion.button
+              type="submit"
+              className="min-h-[3.125rem] bg-white py-1 px-6 border border-white hover:bg-transparent hover:text-white transition-colors duration-200 flex items-center justify-center text-black uppercase text-sm font-medium flex-shrink-0"
+              whileHover={{scale: 1.02}}
+              transition={{duration: 0.3, ease: 'easeOut'}}
+            >
+              Sign Up
+            </motion.button>
+          </motion.form>
+        </motion.div>
+
+        <FooterBottom />
+      </motion.div>
     </footer>
   )
 }
@@ -89,53 +286,117 @@ const FooterBottom: React.FC = () => {
   ]
 
   return (
-    <div className="wrapper">
+    <motion.div
+      className="wrapper"
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.2,
+            delayChildren: 0.3,
+          },
+        },
+      }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{once: true, amount: 0.3}}
+    >
       {/* Brand Section */}
       <div className="flex gap-[18.75rem] w-full">
-        <div className="flex-1">
+        <motion.div className="flex-1" variants={linkVariants}>
           <h2 className="text-xl font-semibold">FYRRE MAGAZINE</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 flex-3">
-          {/* Navigation Links */}
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 flex-3"
+          variants={footerSectionVariants}
+        >
+          {/* Navigation Links with Sequential Stagger */}
           {footerSections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="space-y-3  columns-1 w-full">
+            <motion.div
+              key={sectionIndex}
+              className="space-y-3 columns-1 w-full"
+              variants={{
+                hidden: {opacity: 0, y: 30},
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    duration: 0.5,
+                    ease: 'easeOut',
+                    staggerChildren: 0.1,
+                    delayChildren: 0.1,
+                  },
+                },
+              }}
+            >
               {section.links.map((link, linkIndex) => (
-                <div key={linkIndex}>
-                  <Link href={link.href} className="text-white leading-[180%] text-base">
+                <motion.div
+                  key={linkIndex}
+                  variants={{
+                    hidden: {opacity: 0, x: -20},
+                    visible: {
+                      opacity: 1,
+                      x: 0,
+                      transition: {
+                        duration: 0.4,
+                        ease: 'easeOut',
+                      },
+                    },
+                  }}
+                  whileHover={{x: 5}}
+                >
+                  <Link
+                    href={link.href}
+                    className="text-white leading-[180%] text-base hover:text-gray-300 transition-colors duration-200"
+                  >
                     {link.label}
                   </Link>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* Bottom Section */}
-      <div className="flex flex-col md:flex-row justify-between items-center mt-16 pt-8">
+      <motion.div
+        className="flex flex-col md:flex-row justify-between items-center mt-16 pt-8"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.2,
+              delayChildren: 0.4,
+            },
+          },
+        }}
+      >
         {/* Copyright */}
-        <div className="text-white leading-[160%] text-sm mb-6 md:mb-0">
+        <motion.div
+          className="text-white leading-[160%] text-sm mb-6 md:mb-0"
+          variants={linkVariants}
+        >
           © Made by Itachi.tsx • Powered by Nextjs & Sanity
-        </div>
+        </motion.div>
 
         {/* Social Links */}
-        <div className="flex space-x-4">
-          {socialLinks.map((social, index) => {
-            const IconComponent = social.icon
-            return (
-              <a
-                key={index}
-                href={social.href}
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-                aria-label={social.label}
-                target="_blank"
-              >
-                <Image src={IconComponent} alt={social.label} />
-              </a>
-            )
-          })}
-        </div>
-      </div>
-    </div>
+        <motion.div className="flex space-x-4" variants={socialContainerVariants}>
+          {socialLinks.map((social, index) => (
+            <motion.a
+              key={index}
+              href={social.href}
+              className="text-gray-400 hover:text-white transition-colors duration-200"
+              aria-label={social.label}
+              target="_blank"
+              variants={socialVariants}
+              whileHover={{scale: 1.1}}
+            >
+              <Image src={social.icon} alt={social.label} />
+            </motion.a>
+          ))}
+        </motion.div>
+      </motion.div>
+    </motion.div>
   )
 }
