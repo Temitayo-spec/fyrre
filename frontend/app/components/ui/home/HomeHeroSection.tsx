@@ -268,7 +268,7 @@ const HomeHeroSection: FC = () => {
 
         <div className="mt-[4.73rem] flex items-center gap-12">
           <h2 className="text-[6.5vw] font-semibold leading-[110%] uppercase text-black flex-1 split_hero_text">
-            Don't close your eyes
+            Don&apos;t close your eyes
           </h2>
 
           <div className="space-y-16 flex-1">
