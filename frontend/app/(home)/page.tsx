@@ -7,7 +7,7 @@ import GetStartedCode from '@/app/components/GetStartedCode'
 import SideBySideIcons from '@/app/components/SideBySideIcons'
 import {settingsQuery} from '@/sanity/lib/queries'
 import {sanityFetch} from '@/sanity/lib/live'
-import {HomeHeroSection, ArticlesSection, PodcastSection, AuthorsSection} from './components'
+import {HomeHeroSection, ArticlesSection, PodcastSection, AuthorsSection} from '../components'
 
 export default async function Page() {
   return (

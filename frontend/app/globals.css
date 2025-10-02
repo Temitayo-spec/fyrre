@@ -17,3 +17,102 @@
   --color-white-2: #f9f9f9;
   --font-general-sans: var(--font-general-sans);
 }
+
+button{
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.category-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.category-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: black;
+  clip-path: circle(0% at 50% 100%);
+  transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.category-btn:hover::before {
+  clip-path: circle(150% at 50% 100%);
+}
+
+.category-btn-content {
+  position: relative;
+  z-index: 1;
+  transition: color 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.category-btn:hover .category-btn-content {
+  color: white;
+}
+
+.category-btn.active::before {
+  clip-path: circle(150% at 50% 100%);
+}
+
+.category-btn.active .category-btn-content {
+  color: white;
+}
+
+/* Magazine Card Styles */
+.magazine-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.magazine-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: black;
+  clip-path: circle(0% at 50% 0%);
+  transition: clip-path 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: 1;
+}
+
+.magazine-card:hover::before {
+  clip-path: circle(150% at 50% 0%);
+}
+
+.magazine-card-content {
+  position: relative;
+  z-index: 2;
+}
+
+.magazine-card:hover .magazine-card-content {
+  mix-blend-mode: difference;
+}
+
+.magazine-card:hover .magazine-card-content * {
+  color: white;
+  transition: color 0.3s ease 0.2s;
+}
+
+/* .magazine-card:hover .magazine-card-content img {
+  mix-blend-mode: normal;
+  filter: invert(1);
+  transition: filter 0.3s ease 0.3s;
+} */
+
+/* Smooth border color transition */
+.magazine-card:hover .magazine-card-content .border-black {
+  border-color: white;
+  transition: border-color 0.3s ease 0.2s;
+}
