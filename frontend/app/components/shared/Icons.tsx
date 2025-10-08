@@ -69,3 +69,21 @@ export const RSS = (props: React.SVGProps<SVGSVGElement>) => {
     </svg>
   )
 }
+
+export const ArrorwRight = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="25"
+      viewBox="0 0 24 25"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M16.172 11.6226L10.808 6.2586L12.222 4.8446L20 12.6226L12.222 20.4006L10.808 18.9866L16.172 13.6226H4V11.6226H16.172Z"
+        fill="black"
+      />
+    </svg>
+  )
+}

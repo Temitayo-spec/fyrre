@@ -94,7 +94,7 @@ const Header = () => {
           <Link href="/authors" className="text-xl">
             Authors
           </Link>
-          <Link href="/authors" className="text-xl">
+          <Link href="/podcast" className="text-xl">
             Podcast
           </Link>
 

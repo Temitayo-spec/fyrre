@@ -84,7 +84,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
   return (
     <html lang="en" className={`${general_sans.variable} ${general_sans.className} antialiased`}>
       <body>
-        <section className="min-h-screen text-black">
+        <section className="min-h-screen text-black overflow-x-hidden">
           {/* The <Toaster> component is responsible for rendering toast notifications used in /app/client-utils.ts and /app/components/DraftModeToast.tsx */}
           <Toaster />
           {isDraftMode && (
