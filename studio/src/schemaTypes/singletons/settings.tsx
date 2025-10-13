@@ -2,6 +2,8 @@ import {CogIcon} from '@sanity/icons'
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
 import * as demo from '../../lib/initialValues'
+import {footer} from '../objects/footer'
+import {navbar} from '../objects/navbar'
 
 /**
  * Settings schema Singleton.  Singletons are single documents that are displayed not in a collection, handy for things like site settings and other global configurations.
@@ -52,11 +54,12 @@ export const settings = defineType({
                       list: [
                         {title: 'URL', value: 'href'},
                         {title: 'Page', value: 'page'},
-                        {title: 'Post', value: 'post'},
+                        {title: 'Href', value: 'string'},
                       ],
                       layout: 'radio',
                     },
                   }),
+
                   defineField({
                     name: 'href',
                     title: 'URL',
@@ -73,8 +76,7 @@ export const settings = defineType({
                   defineField({
                     name: 'page',
                     title: 'Page',
-                    type: 'reference',
-                    to: [{type: 'page'}],
+                    type: 'string',
                     hidden: ({parent}) => parent?.linkType !== 'page',
                     validation: (Rule) =>
                       Rule.custom((value, context: any) => {
@@ -84,20 +86,7 @@ export const settings = defineType({
                         return true
                       }),
                   }),
-                  defineField({
-                    name: 'post',
-                    title: 'Post',
-                    type: 'reference',
-                    to: [{type: 'post'}],
-                    hidden: ({parent}) => parent?.linkType !== 'post',
-                    validation: (Rule) =>
-                      Rule.custom((value, context: any) => {
-                        if (context.parent?.linkType === 'post' && !value) {
-                          return 'Post reference is required when Link Type is Post'
-                        }
-                        return true
-                      }),
-                  }),
+
                   defineField({
                     name: 'openInNewTab',
                     title: 'Open in new tab',
@@ -150,6 +139,16 @@ export const settings = defineType({
           ),
         }),
       ],
+    }),
+    defineField({
+      name: 'footer',
+      title: 'Footer',
+      type: 'footer',
+    }),
+    defineField({
+      name: 'navbar',
+      title: 'Navbar',
+      type: 'navbar',
     }),
   ],
   preview: {
