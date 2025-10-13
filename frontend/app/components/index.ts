@@ -21,7 +21,11 @@ export {default as MagazineLatestPosts} from './ui/magazine/details/LatestPosts'
 // Podcast UI Components
 export {default as PodcastHeroSection} from './ui/podcast/PodcastHeroSection'
 export {default as PodcastCoreSection} from './ui/podcast/PodcastCoreSection'
+export {default as PodcastDetailsSection} from './ui/podcast/details'
+export {default as LatestPodcasts} from './ui/podcast/details/LatestPodcasts'
 
 // Authors UI Components
 export {default as AuthorsHeroSection} from './ui/authors/AuthorsHeroSection'
 export {default as AuthorsCoreSection} from './ui/authors/AuthorsCoreSection'
+export {default as AuthorDetailsSection} from './ui/authors/details'
+export {default as ArticlesByAuthor} from './ui/authors/details/ArticlesByAuthor'

@@ -186,14 +186,14 @@ const PodcastSection = () => {
 
 export default PodcastSection
 
-const PodcastCard: FC<{
-  thumbnail: StaticImageData
-  title: string
-  episode_num: string
-  publishedAt: string
-  duration: string
-  slug: string
-}> = ({thumbnail, title, episode_num, publishedAt, duration, slug}) => {
+export const PodcastCard: FC<Podcast> = ({
+  thumbnail,
+  title,
+  episode_num,
+  publishedAt,
+  duration,
+  slug,
+}) => {
   return (
     <Link href={slug} className="flex flex-1">
       <motion.div

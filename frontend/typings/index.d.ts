@@ -7,3 +7,12 @@ interface Magazine {
   author: string
   duration: number
 }
+
+interface Podcast {
+  thumbnail: StaticImageData
+  title: string
+  episode_num: string
+  publishedAt: string
+  duration: string
+  slug: string
+}
