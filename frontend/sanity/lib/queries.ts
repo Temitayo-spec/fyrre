@@ -110,18 +110,85 @@ export const getPageQuery = defineQuery(`
     subheading,
     "pageBuilder": pageBuilder[]{
       ...,
-      _type == "callToAction" => {
-        ${linkFields},
-      },
-      _type == "infoSection" => {
-        content[]{
-          ...,
-          markDefs[]{
-            ...,
-            ${linkReference}
+        _type == "heroSection" => {
+        _key,
+        _type,
+        heroText {
+          enabled,
+          strokeColor {
+            hex
+          },
+          fillColor {
+            hex
           }
+        },
+        newsTicker {
+          enabled,
+          label,
+          backgroundColor,
+          textColor,
+          items[] {
+            text
+          },
+          speed
+        },
+        heroHeading,
+        description,
+        metadata {
+          author {
+            label,
+            name
+          },
+          date {
+            label,
+            value
+          },
+          duration {
+            label,
+            value
+          }
+        },
+        label {
+          text,
+          borderColor,
+          textColor
+        },
+        heroImage {
+          asset->{
+            _id,
+            url,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          },
+          alt,
+          hotspot,
+          crop
+        },
+        animations {
+          enabled,
+          parallaxStrength
+        },
+        styling {
+          headingColor,
+          descriptionColor,
+          backgroundColor
         }
       },
+      // _type == "infoSection" => {
+      //   content[]{
+      //     ...,
+      //     markDefs[]{
+      //       ...,
+      //       ${linkReference}
+      //     }
+      //   }
+      // },
     },
   }
 `)

@@ -2,10 +2,6 @@
 import React, {useEffect, useRef} from 'react'
 import {motion, Variants} from 'framer-motion'
 import Marquee from 'react-fast-marquee'
-import instagram from '@/public/svgs/instagram.svg'
-import twitter from '@/public/svgs/twitter.svg'
-import youtube from '@/public/svgs/youtube.svg'
-import rss from '@/public/svgs/rss.svg'
 import Link from 'next/link'
 import Image from 'next/image'
 import {FooterType} from '@/typings'
@@ -245,47 +241,7 @@ const Footer: React.FC<{footer: FooterType}> = ({footer}) => {
 
 export default Footer
 
-interface FooterLink {
-  label: string
-  href: string
-}
-
-interface FooterSection {
-  links: FooterLink[]
-}
-
 const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
-  const footerSections: FooterSection[] = [
-    {
-      links: [
-        {label: 'Art', href: '/art'},
-        {label: 'Design', href: '/design'},
-        {label: 'Architecture', href: '/architecture'},
-      ],
-    },
-    {
-      links: [
-        {label: 'Magazine', href: '/magazine'},
-        {label: 'Podcast', href: '/podcast'},
-        {label: 'Authors', href: '/authors'},
-      ],
-    },
-    {
-      links: [
-        {label: 'Styleguide', href: '/styleguide'},
-        {label: 'Licensing', href: '/licensing'},
-        {label: 'Changelog', href: '/changelog'},
-      ],
-    },
-  ]
-
-  const socialLinks = [
-    {icon: instagram, href: 'https://instagram.com', label: 'Instagram'},
-    {icon: twitter, href: 'https://x.com', label: 'X'},
-    {icon: youtube, href: 'https://youtube.com', label: 'YouTube'},
-    {icon: rss, href: '/rss', label: 'RSS Feed'},
-  ]
-
   return (
     <motion.div
       className="wrapper"
@@ -479,7 +435,13 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
               variants={socialVariants}
               whileHover={{scale: 1.1}}
             >
-              <Image src={(social?.icon as any)?.asset?.url || ''} width={24} height={24} className="object-contain" alt={social.platform} />
+              <Image
+                src={(social?.icon as any)?.asset?.url || ''}
+                width={24}
+                height={24}
+                className="object-contain"
+                alt={social.platform}
+              />
             </motion.a>
           ))}
         </motion.div>

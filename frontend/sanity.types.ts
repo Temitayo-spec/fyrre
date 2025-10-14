@@ -90,6 +90,69 @@ export type Link = {
   openInNewTab?: boolean
 }
 
+export type HeroSection = {
+  _type: 'heroSection'
+  heroText?: {
+    enabled?: boolean
+    strokeColor?: Color
+    fillColor?: Color
+  }
+  newsTicker?: {
+    enabled?: boolean
+    label: string
+    backgroundColor?: string
+    textColor?: string
+    items: Array<{
+      text: string
+      _key: string
+    }>
+    speed?: number
+  }
+  heroHeading: string
+  description: string
+  metadata?: {
+    author?: {
+      label?: string
+      name: string
+    }
+    date?: {
+      label?: string
+      value: string
+    }
+    duration?: {
+      label?: string
+      value: string
+    }
+  }
+  label?: {
+    text: string
+    borderColor?: string
+    textColor?: string
+  }
+  heroImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'image'
+  }
+  animations?: {
+    enabled?: boolean
+    parallaxStrength?: number
+  }
+  styling?: {
+    headingColor?: string
+    descriptionColor?: string
+    backgroundColor?: string
+  }
+}
+
 export type InfoSection = {
   _type: 'infoSection'
   heading?: string
@@ -161,26 +224,6 @@ export type BlockContent = Array<{
   _key: string
 }>
 
-export type Page = {
-  _id: string
-  _type: 'page'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  name: string
-  slug: Slug
-  heading: string
-  subheading?: string
-  pageBuilder?: Array<
-    | ({
-        _key: string
-      } & CallToAction)
-    | ({
-        _key: string
-      } & InfoSection)
-  >
-}
-
 export type Post = {
   _id: string
   _type: 'post'
@@ -234,6 +277,23 @@ export type Person = {
     alt?: string
     _type: 'image'
   }
+}
+
+export type Page = {
+  _id: string
+  _type: 'page'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name: string
+  slug: Slug
+  heading: string
+  subheading?: string
+  pageBuilder?: Array<
+    {
+      _key: string
+    } & HeroSection
+  >
 }
 
 export type Settings = {
@@ -635,11 +695,12 @@ export type AllSanitySchemaTypes =
   | Button
   | CallToAction
   | Link
+  | HeroSection
   | InfoSection
   | BlockContent
-  | Page
   | Post
   | Person
+  | Page
   | Settings
   | Navbar
   | Footer
@@ -673,7 +734,7 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings"][0]{  _id,  title,  description,  ogImage,  footer {    newsletter {      active,      title,      description,      inputPlaceholder,      buttonText,      marquee,    },    logo {      asset->{        url      },      alt    },    tagline,    description,    navLinks[] {      text,      url    },    copyright,    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },  },  navbar {    logo {      asset->{        url      },      alt    },    navLinks[] {      text,      url    },    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },    button {      text,      link {        _type,        _key,        linkType,        page,        url,        href,        openInNewTab      },      type    }  }}
+// Query: *[_type == "settings"][0]{  _id,  title,  description,  ogImage,  footer {    newsletter {      active,      title,      description,      inputPlaceholder,      buttonText,    },    marquee,    logo {      asset->{        url      },      alt    },    tagline,    description,    navLinks[] {      text,      url    },    copyright,    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },  },  navbar {    logo {      asset->{        url      },      alt    },    navLinks[] {      text,      url    },    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },    button {      text,      link {        _type,        _key,        linkType,        page,        url,        href,        openInNewTab      },      type    }  }}
 export type SettingsQueryResult = {
   _id: string
   title: string
@@ -719,8 +780,8 @@ export type SettingsQueryResult = {
       description: string | null
       inputPlaceholder: string | null
       buttonText: string | null
-      marquee: null
     } | null
+    marquee: Marquee | null
     logo: {
       asset: {
         url: string | null
@@ -787,7 +848,7 @@ export type SettingsQueryResult = {
   } | null
 } | null
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {          link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      },      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,        _type == "heroSection" => {        _key,        _type,        heroText {          enabled,          strokeColor {            hex          },          fillColor {            hex          }        },        newsTicker {          enabled,          label,          backgroundColor,          textColor,          items[] {            text          },          speed        },        heroHeading,        description,        metadata {          author {            label,            name          },          date {            label,            value          },          duration {            label,            value          }        },        label {          text,          borderColor,          textColor        },        heroImage {          asset->{            _id,            url,            metadata {              lqip,              dimensions {                width,                height,                aspectRatio              }            }          },          alt,          hotspot,          crop        },        animations {          enabled,          parallaxStrength        },        styling {          headingColor,          descriptionColor,          backgroundColor        }      },      // _type == "infoSection" => {      //   content[]{      //     ...,      //     markDefs[]{      //       ...,      //         _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      //     }      //   }      // },    },  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -795,51 +856,76 @@ export type GetPageQueryResult = {
   slug: Slug
   heading: string
   subheading: string | null
-  pageBuilder: Array<
-    | {
-        _key: string
-        _type: 'callToAction'
-        heading: string
-        text?: string
-        buttonText?: string
-        link: {
-          _type: 'link'
-          linkType?: 'href' | 'page' | 'post'
-          href?: string
-          page: string | null
-          post: string | null
-          openInNewTab?: boolean
+  pageBuilder: Array<{
+    _key: string
+    _type: 'heroSection'
+    heroText: {
+      enabled: boolean | null
+      strokeColor: {
+        hex: string | null
+      } | null
+      fillColor: {
+        hex: string | null
+      } | null
+    } | null
+    newsTicker: {
+      enabled: boolean | null
+      label: string
+      backgroundColor: string | null
+      textColor: string | null
+      items: Array<{
+        text: string
+      }>
+      speed: number | null
+    } | null
+    heroHeading: string
+    description: string
+    metadata: {
+      author: {
+        label: string | null
+        name: string
+      } | null
+      date: {
+        label: string | null
+        value: string
+      } | null
+      duration: {
+        label: string | null
+        value: string
+      } | null
+    } | null
+    label: {
+      text: string
+      borderColor: string | null
+      textColor: string | null
+    } | null
+    heroImage: {
+      asset: {
+        _id: string
+        url: string | null
+        metadata: {
+          lqip: string | null
+          dimensions: {
+            width: number
+            height: number
+            aspectRatio: number
+          } | null
         } | null
-      }
-    | {
-        _key: string
-        _type: 'infoSection'
-        heading?: string
-        subheading?: string
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>
-            text?: string
-            _type: 'span'
-            _key: string
-          }>
-          style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
-          listItem?: 'bullet' | 'number'
-          markDefs: Array<{
-            linkType?: 'href' | 'page' | 'post'
-            href?: string
-            page: string | null
-            post: string | null
-            openInNewTab?: boolean
-            _type: 'link'
-            _key: string
-          }> | null
-          level?: number
-          _type: 'block'
-          _key: string
-        }> | null
-      }
-  > | null
+      } | null
+      alt: string
+      hotspot: SanityImageHotspot | null
+      crop: SanityImageCrop | null
+    }
+    animations: {
+      enabled: boolean | null
+      parallaxStrength: number | null
+    } | null
+    styling: {
+      headingColor: string | null
+      descriptionColor: string | null
+      backgroundColor: string | null
+    } | null
+  }> | null
 } | null
 // Variable: sitemapData
 // Query: *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
@@ -1012,8 +1098,8 @@ export type PagesSlugsResult = Array<{
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '*[_type == "settings"][0]{\n  _id,\n  title,\n  description,\n  ogImage,\n  footer {\n    newsletter {\n      active,\n      title,\n      description,\n      inputPlaceholder,\n      buttonText,\n      marquee,\n    },\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    tagline,\n    description,\n    navLinks[] {\n      text,\n      url\n    },\n    copyright,\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n  },\n  navbar {\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    navLinks[] {\n      text,\n      url\n    },\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n    button {\n      text,\n      link {\n        _type,\n        _key,\n        linkType,\n        page,\n        url,\n        href,\n        openInNewTab\n      },\n      type\n    }\n  }\n}': SettingsQueryResult
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n,\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n    },\n  }\n': GetPageQueryResult
+    '*[_type == "settings"][0]{\n  _id,\n  title,\n  description,\n  ogImage,\n  footer {\n    newsletter {\n      active,\n      title,\n      description,\n      inputPlaceholder,\n      buttonText,\n    },\n    marquee,\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    tagline,\n    description,\n    navLinks[] {\n      text,\n      url\n    },\n    copyright,\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n  },\n  navbar {\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    navLinks[] {\n      text,\n      url\n    },\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n    button {\n      text,\n      link {\n        _type,\n        _key,\n        linkType,\n        page,\n        url,\n        href,\n        openInNewTab\n      },\n      type\n    }\n  }\n}': SettingsQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n        _type == "heroSection" => {\n        _key,\n        _type,\n        heroText {\n          enabled,\n          strokeColor {\n            hex\n          },\n          fillColor {\n            hex\n          }\n        },\n        newsTicker {\n          enabled,\n          label,\n          backgroundColor,\n          textColor,\n          items[] {\n            text\n          },\n          speed\n        },\n        heroHeading,\n        description,\n        metadata {\n          author {\n            label,\n            name\n          },\n          date {\n            label,\n            value\n          },\n          duration {\n            label,\n            value\n          }\n        },\n        label {\n          text,\n          borderColor,\n          textColor\n        },\n        heroImage {\n          asset->{\n            _id,\n            url,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height,\n                aspectRatio\n              }\n            }\n          },\n          alt,\n          hotspot,\n          crop\n        },\n        animations {\n          enabled,\n          parallaxStrength\n        },\n        styling {\n          headingColor,\n          descriptionColor,\n          backgroundColor\n        }\n      },\n      // _type == "infoSection" => {\n      //   content[]{\n      //     ...,\n      //     markDefs[]{\n      //       ...,\n      //       \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      //     }\n      //   }\n      // },\n    },\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult

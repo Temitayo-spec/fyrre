@@ -7,10 +7,12 @@ import gsap from 'gsap'
 import {DrawSVGPlugin} from 'gsap/DrawSVGPlugin'
 import {SplitText} from 'gsap/SplitText'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
+import {HeroSection} from '@/sanity.types'
+import { formatDate } from '@/lib'
 
 gsap.registerPlugin(DrawSVGPlugin, SplitText, ScrollTrigger)
 
-const HomeHeroSection: FC = () => {
+const HomeHeroSection: FC<{props: HeroSection}> = ({props}) => {
   const sectionRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
   const marqueeRef = useRef<HTMLDivElement>(null)
@@ -169,7 +171,7 @@ const HomeHeroSection: FC = () => {
         )
 
         gsap.to(imageRef.current.querySelector('img'), {
-          yPercent: -30,
+          yPercent: -20,
           ease: 'none',
           scrollTrigger: {
             trigger: imageRef.current,
@@ -246,66 +248,68 @@ const HomeHeroSection: FC = () => {
 
         <div ref={marqueeRef} className="bg-black p-5 gap-6 flex items-center overflow-hidden">
           <div className="flex-shrink-0">
-            <h3 className="text-[1.375rem] text-white font-semibold uppercase">News Ticker+++</h3>
+            <h3 className="text-[1.375rem] text-white font-semibold uppercase">
+              {props.newsTicker?.label}
+            </h3>
           </div>
           <div className="flex-1">
             <Marquee gradient={false} className="overflow-hidden">
-              <p className="text-xl text-white mr-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit +++
-              </p>
-              <p className="text-xl text-white mr-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit +++
-              </p>
-              <p className="text-xl text-white mr-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit +++
-              </p>
-              <p className="text-xl text-white mr-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit +++
-              </p>
+              {props.newsTicker?.items.map((item, index) => (
+                <p className="text-xl text-white mr-6" key={index}>
+                  {item.text}
+                </p>
+              ))}
             </Marquee>
           </div>
         </div>
 
         <div className="mt-[4.73rem] flex items-center gap-12">
           <h2 className="text-[6.5vw] font-semibold leading-[110%] uppercase text-black flex-1 split_hero_text">
-            Don&apos;t close your eyes
+            {props.heroHeading}
           </h2>
 
           <div className="space-y-16 flex-1">
-            <p className="text-lg leading-[180%] text-black split">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Egestas dui id ornare arcu odio ut sem.
-              Cras ornare arcu dui vivamus arcu felis bibendum ut. Porttitor leo a diam.
-            </p>
+            <p className="text-lg leading-[180%] text-black split">{props?.description}</p>
 
             <div className="flex items-center justify-between meta-info">
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-semibold leading-[160%]">Text</h4>
-                  <p className="text-sm leading-[160%]">Jakob Gronberg</p>
+                  <h4 className="text-sm font-semibold leading-[160%]">
+                    {props.metadata?.author?.label}
+                  </h4>
+                  <p className="text-sm leading-[160%]">{props.metadata?.author?.name}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-semibold leading-[160%]">Date</h4>
-                  <p className="text-sm leading-[160%]">16. March 2022</p>
+                  <h4 className="text-sm font-semibold leading-[160%]">
+                    {props.metadata?.date?.label}
+                  </h4>
+                  <p className="text-sm leading-[160%]">{formatDate(props.metadata?.date?.value as string)}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-semibold leading-[160%]">Duration</h4>
-                  <p className="text-sm leading-[160%]">1 Min</p>
+                  <h4 className="text-sm font-semibold leading-[160%]">
+                    {props?.metadata?.duration?.label}
+                  </h4>
+                  <p className="text-sm leading-[160%]">{props?.metadata?.duration?.value}</p>
                 </div>
               </div>
 
               <div className="grid place-items-center text-xs uppercase py-2 px-3 border border-black rounded-full label-badge">
-                Label
+                {props?.label?.text}
               </div>
             </div>
           </div>
         </div>
 
-        <div ref={imageRef} className="relative max-h-[45rem] overflow-hidden mt-12">
+        <div
+          ref={imageRef}
+          className="relative min-h-[44.5rem] max-h-[45rem] overflow-hidden mt-12"
+        >
           <Image
-            src={hero_banner}
+            src={(props.heroImage as any)?.asset?.url ?? ''}
             alt="hero banner"
             className="w-full h-full object-cover will-change-transform object-top"
+            width={1440}
+            height={1000}
           />
         </div>
       </div>
