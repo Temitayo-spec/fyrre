@@ -8,6 +8,7 @@ import youtube from '@/public/svgs/youtube.svg'
 import rss from '@/public/svgs/rss.svg'
 import Link from 'next/link'
 import Image from 'next/image'
+import {FooterType} from '@/typings'
 
 const containerVariants: Variants = {
   hidden: {},
@@ -85,7 +86,7 @@ const socialContainerVariants: Variants = {
   },
 }
 
-const Footer = () => {
+const Footer: React.FC<{footer: FooterType}> = ({footer}) => {
   const footerTextRef = useRef<HTMLHeadingElement>(null)
   const hasAnimated = useRef(false)
 
@@ -150,7 +151,7 @@ const Footer = () => {
           <Marquee>
             {Array.from({length: 10}).map((_, index) => (
               <p className="text-[1.375rem] text-white mr-6 uppercase font-semibold" key={index}>
-                Newsletter+++
+                {footer.marquee?.text}
               </p>
             ))}
           </Marquee>
@@ -164,7 +165,7 @@ const Footer = () => {
             ref={footerTextRef}
             className="split_hero_text max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2"
           >
-            Design News to your inbox
+            {footer.newsletter?.title}
           </h2>
 
           <motion.h2
@@ -220,7 +221,7 @@ const Footer = () => {
           >
             <motion.input
               type="email"
-              placeholder="Email"
+              placeholder={footer.newsletter?.inputPlaceholder}
               className="max-w-[19.3125rem] min-h-[3.125rem] w-full py-2 px-[0.9375rem] bg-white placeholder:text-black text-black"
               whileHover={{scale: 1.02}}
               transition={{duration: 0.3, ease: 'easeOut'}}
@@ -231,12 +232,12 @@ const Footer = () => {
               whileHover={{scale: 1.02}}
               transition={{duration: 0.3, ease: 'easeOut'}}
             >
-              Sign Up
+              {footer.newsletter?.buttonText}
             </motion.button>
           </motion.form>
         </motion.div>
 
-        <FooterBottom />
+        <FooterBottom footer={footer} />
       </motion.div>
     </footer>
   )
@@ -253,7 +254,7 @@ interface FooterSection {
   links: FooterLink[]
 }
 
-const FooterBottom: React.FC = () => {
+const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
   const footerSections: FooterSection[] = [
     {
       links: [
@@ -304,7 +305,14 @@ const FooterBottom: React.FC = () => {
       {/* Brand Section */}
       <div className="flex gap-[18.75rem] w-full">
         <motion.div className="flex-1" variants={linkVariants}>
-          <h2 className="text-xl font-semibold">FYRRE MAGAZINE</h2>
+          <h2 className="text-xl font-semibold">
+            <Image
+              src={(footer.logo as any).asset?.url}
+              alt={footer?.logo.alt || 'Logo'}
+              width={220}
+              height={20}
+            />
+          </h2>
         </motion.div>
 
         <motion.div
@@ -312,50 +320,129 @@ const FooterBottom: React.FC = () => {
           variants={footerSectionVariants}
         >
           {/* Navigation Links with Sequential Stagger */}
-          {footerSections.map((section, sectionIndex) => (
-            <motion.div
-              key={sectionIndex}
-              className="space-y-3 columns-1 w-full"
-              variants={{
-                hidden: {opacity: 0, y: 30},
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: {
-                    duration: 0.5,
-                    ease: 'easeOut',
-                    staggerChildren: 0.1,
-                    delayChildren: 0.1,
-                  },
+          <motion.div
+            className="space-y-3 columns-1 w-full"
+            variants={{
+              hidden: {opacity: 0, y: 30},
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.5,
+                  ease: 'easeOut',
+                  staggerChildren: 0.1,
+                  delayChildren: 0.1,
                 },
-              }}
-            >
-              {section.links.map((link, linkIndex) => (
-                <motion.div
-                  key={linkIndex}
-                  variants={{
-                    hidden: {opacity: 0, x: -20},
-                    visible: {
-                      opacity: 1,
-                      x: 0,
-                      transition: {
-                        duration: 0.4,
-                        ease: 'easeOut',
-                      },
+              },
+            }}
+          >
+            {footer?.navLinks?.slice(0, 3).map((navlink, index) => (
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: {opacity: 0, x: -20},
+                  visible: {
+                    opacity: 1,
+                    x: 0,
+                    transition: {
+                      duration: 0.4,
+                      ease: 'easeOut',
                     },
-                  }}
-                  whileHover={{x: 5}}
+                  },
+                }}
+                whileHover={{x: 5}}
+              >
+                <Link
+                  href={navlink.url}
+                  className="text-white leading-[180%] text-base hover:text-gray-300 transition-colors duration-200"
                 >
-                  <Link
-                    href={link.href}
-                    className="text-white leading-[180%] text-base hover:text-gray-300 transition-colors duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
-          ))}
+                  {navlink.text}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+          <motion.div
+            className="space-y-3 columns-1 w-full"
+            variants={{
+              hidden: {opacity: 0, y: 30},
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.5,
+                  ease: 'easeOut',
+                  staggerChildren: 0.1,
+                  delayChildren: 0.1,
+                },
+              },
+            }}
+          >
+            {footer?.navLinks?.slice(3, 6).map((navlink, index) => (
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: {opacity: 0, x: -20},
+                  visible: {
+                    opacity: 1,
+                    x: 0,
+                    transition: {
+                      duration: 0.4,
+                      ease: 'easeOut',
+                    },
+                  },
+                }}
+                whileHover={{x: 5}}
+              >
+                <Link
+                  href={navlink.url}
+                  className="text-white leading-[180%] text-base hover:text-gray-300 transition-colors duration-200"
+                >
+                  {navlink.text}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+          <motion.div
+            className="space-y-3 columns-1 w-full"
+            variants={{
+              hidden: {opacity: 0, y: 30},
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.5,
+                  ease: 'easeOut',
+                  staggerChildren: 0.1,
+                  delayChildren: 0.1,
+                },
+              },
+            }}
+          >
+            {footer?.navLinks?.slice(6, 9).map((navlink, index) => (
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: {opacity: 0, x: -20},
+                  visible: {
+                    opacity: 1,
+                    x: 0,
+                    transition: {
+                      duration: 0.4,
+                      ease: 'easeOut',
+                    },
+                  },
+                }}
+                whileHover={{x: 5}}
+              >
+                <Link
+                  href={navlink.url}
+                  className="text-white leading-[180%] text-base hover:text-gray-300 transition-colors duration-200"
+                >
+                  {navlink.text}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
 
@@ -377,22 +464,22 @@ const FooterBottom: React.FC = () => {
           className="text-white leading-[160%] text-sm mb-6 md:mb-0"
           variants={linkVariants}
         >
-          © Made by Itachi.tsx • Powered by Nextjs & Sanity
+          {footer.copyright}
         </motion.div>
 
         {/* Social Links */}
         <motion.div className="flex space-x-4" variants={socialContainerVariants}>
-          {socialLinks.map((social, index) => (
+          {footer?.socialLinks?.map((social, index) => (
             <motion.a
               key={index}
-              href={social.href}
+              href={social.url}
               className="text-gray-400 hover:text-white transition-colors duration-200"
-              aria-label={social.label}
+              aria-label={social.platform}
               target="_blank"
               variants={socialVariants}
               whileHover={{scale: 1.1}}
             >
-              <Image src={social.icon} alt={social.label} />
+              <Image src={(social?.icon as any)?.asset?.url || ''} width={24} height={24} className="object-contain" alt={social.platform} />
             </motion.a>
           ))}
         </motion.div>

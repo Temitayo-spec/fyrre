@@ -13,6 +13,56 @@
  */
 
 // Source: schema.json
+export type SocialLink = {
+  _type: 'socialLink'
+  platform: string
+  url: string
+  icon: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+}
+
+export type NavLink = {
+  _type: 'navLink'
+  text: string
+  url: string
+}
+
+export type Marquee = {
+  _type: 'marquee'
+  enabled?: boolean
+  text: string
+  speed?: number
+  backgroundColor?: Color
+  textColor?: Color
+}
+
+export type Newsletter = {
+  _type: 'newsletter'
+  active?: boolean
+  title?: string
+  description?: string
+  inputPlaceholder?: string
+  buttonText?: string
+}
+
+export type Button = {
+  _type: 'button'
+  text?: string
+  link?: Link
+  type?: 'primary' | 'bordered' | 'secondary' | 'ghost' | 'elevated'
+}
+
 export type CallToAction = {
   _type: 'callToAction'
   heading: string
@@ -111,61 +161,6 @@ export type BlockContent = Array<{
   _key: string
 }>
 
-export type Settings = {
-  _id: string
-  _type: 'settings'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  title: string
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal'
-    listItem?: never
-    markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'post'
-      href?: string
-      page?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'page'
-      }
-      post?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'post'
-      }
-      openInNewTab?: boolean
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-  ogImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    metadataBase?: string
-    _type: 'image'
-  }
-}
-
 export type Page = {
   _id: string
   _type: 'page'
@@ -239,6 +234,144 @@ export type Person = {
     alt?: string
     _type: 'image'
   }
+}
+
+export type Settings = {
+  _id: string
+  _type: 'settings'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: Array<{
+      linkType?: 'href' | 'page' | 'string'
+      href?: string
+      page?: string
+      openInNewTab?: boolean
+      _type: 'link'
+      _key: string
+    }>
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  ogImage?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    metadataBase?: string
+    _type: 'image'
+  }
+  footer?: Footer
+  navbar?: Navbar
+}
+
+export type Navbar = {
+  _type: 'navbar'
+  logo?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  navLinks?: Array<
+    {
+      _key: string
+    } & NavLink
+  >
+  socialLinks?: Array<
+    {
+      _key: string
+    } & SocialLink
+  >
+  button?: Button
+}
+
+export type Footer = {
+  _type: 'footer'
+  newsletter?: Newsletter
+  marquee?: Marquee
+  logo: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  tagline?: string
+  navLinks?: Array<
+    {
+      _key: string
+    } & NavLink
+  >
+  copyright?: string
+  socialLinks?: Array<
+    {
+      _key: string
+    } & SocialLink
+  >
+}
+
+export type Color = {
+  _type: 'color'
+  hex?: string
+  alpha?: number
+  hsl?: HslaColor
+  hsv?: HsvaColor
+  rgb?: RgbaColor
+}
+
+export type RgbaColor = {
+  _type: 'rgbaColor'
+  r?: number
+  g?: number
+  b?: number
+  a?: number
+}
+
+export type HsvaColor = {
+  _type: 'hsvaColor'
+  h?: number
+  s?: number
+  v?: number
+  a?: number
+}
+
+export type HslaColor = {
+  _type: 'hslaColor'
+  h?: number
+  s?: number
+  l?: number
+  a?: number
 }
 
 export type SanityAssistInstructionTask = {
@@ -495,14 +628,25 @@ export type SanityAssetSourceData = {
 }
 
 export type AllSanitySchemaTypes =
+  | SocialLink
+  | NavLink
+  | Marquee
+  | Newsletter
+  | Button
   | CallToAction
   | Link
   | InfoSection
   | BlockContent
-  | Settings
   | Page
   | Post
   | Person
+  | Settings
+  | Navbar
+  | Footer
+  | Color
+  | RgbaColor
+  | HsvaColor
+  | HslaColor
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -529,15 +673,11 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings"][0]
+// Query: *[_type == "settings"][0]{  _id,  title,  description,  ogImage,  footer {    newsletter {      active,      title,      description,      inputPlaceholder,      buttonText,      marquee,    },    logo {      asset->{        url      },      alt    },    tagline,    description,    navLinks[] {      text,      url    },    copyright,    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },  },  navbar {    logo {      asset->{        url      },      alt    },    navLinks[] {      text,      url    },    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },    button {      text,      link {        _type,        _key,        linkType,        page,        url,        href,        openInNewTab      },      type    }  }}
 export type SettingsQueryResult = {
   _id: string
-  _type: 'settings'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
   title: string
-  description?: Array<{
+  description: Array<{
     children?: Array<{
       marks?: Array<string>
       text?: string
@@ -547,20 +687,9 @@ export type SettingsQueryResult = {
     style?: 'normal'
     listItem?: never
     markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'post'
+      linkType?: 'href' | 'page' | 'string'
       href?: string
-      page?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'page'
-      }
-      post?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'post'
-      }
+      page?: string
       openInNewTab?: boolean
       _type: 'link'
       _key: string
@@ -568,8 +697,8 @@ export type SettingsQueryResult = {
     level?: number
     _type: 'block'
     _key: string
-  }>
-  ogImage?: {
+  }> | null
+  ogImage: {
     asset?: {
       _ref: string
       _type: 'reference'
@@ -582,7 +711,80 @@ export type SettingsQueryResult = {
     alt?: string
     metadataBase?: string
     _type: 'image'
-  }
+  } | null
+  footer: {
+    newsletter: {
+      active: boolean | null
+      title: string | null
+      description: string | null
+      inputPlaceholder: string | null
+      buttonText: string | null
+      marquee: null
+    } | null
+    logo: {
+      asset: {
+        url: string | null
+      } | null
+      alt: string | null
+    }
+    tagline: string | null
+    description: null
+    navLinks: Array<{
+      text: string
+      url: string
+    }> | null
+    copyright: string | null
+    socialLinks: Array<{
+      platform: string
+      url: string
+      icon: {
+        asset: {
+          url: string | null
+        } | null
+        alt: string | null
+      }
+    }> | null
+  } | null
+  navbar: {
+    logo: {
+      asset: {
+        url: string | null
+      } | null
+      alt: string | null
+    } | null
+    navLinks: Array<{
+      text: string
+      url: string
+    }> | null
+    socialLinks: Array<{
+      platform: string
+      url: string
+      icon: {
+        asset: {
+          url: string | null
+        } | null
+        alt: string | null
+      }
+    }> | null
+    button: {
+      text: string | null
+      link: {
+        _type: 'link'
+        _key: null
+        linkType: 'href' | 'page' | 'post' | null
+        page: {
+          _ref: string
+          _type: 'reference'
+          _weak?: boolean
+          [internalGroqTypeReferenceTo]?: 'page'
+        } | null
+        url: null
+        href: string | null
+        openInNewTab: boolean | null
+      } | null
+      type: 'bordered' | 'elevated' | 'ghost' | 'primary' | 'secondary' | null
+    } | null
+  } | null
 } | null
 // Variable: getPageQuery
 // Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {          link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      },      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },    },  }
@@ -810,7 +1012,7 @@ export type PagesSlugsResult = Array<{
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '*[_type == "settings"][0]': SettingsQueryResult
+    '*[_type == "settings"][0]{\n  _id,\n  title,\n  description,\n  ogImage,\n  footer {\n    newsletter {\n      active,\n      title,\n      description,\n      inputPlaceholder,\n      buttonText,\n      marquee,\n    },\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    tagline,\n    description,\n    navLinks[] {\n      text,\n      url\n    },\n    copyright,\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n  },\n  navbar {\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    navLinks[] {\n      text,\n      url\n    },\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n    button {\n      text,\n      link {\n        _type,\n        _key,\n        linkType,\n        page,\n        url,\n        href,\n        openInNewTab\n      },\n      type\n    }\n  }\n}': SettingsQueryResult
     '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n,\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n    },\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult

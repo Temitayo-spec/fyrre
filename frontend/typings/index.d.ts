@@ -1,3 +1,5 @@
+import {Footer, Navbar} from '@/sanity.types'
+
 interface Magazine {
   title: string
   category: string
@@ -16,3 +18,7 @@ interface Podcast {
   duration: string
   slug: string
 }
+
+interface NavbarType extends Navbar {}
+
+interface FooterType extends Footer {}

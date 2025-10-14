@@ -1,14 +1,19 @@
 import React, {FC} from 'react'
 import {Header, Footer} from '../'
 import {ReactLenis} from 'lenis/react'
+import { FooterType, NavbarType } from '@/typings';
 
-const Layout: FC<{children: React.ReactNode}> = ({children}) => {
+const Layout: FC<{navbar: NavbarType; footer: FooterType; children: React.ReactNode}> = ({
+  navbar,
+  footer,
+  children,
+}) => {
   return (
     <main>
       <ReactLenis root />
-      <Header />
+      <Header navbar={navbar} />
       {children}
-      <Footer />
+      <Footer footer={footer} />
     </main>
   )
 }

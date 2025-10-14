@@ -2,6 +2,10 @@
 import Link from 'next/link'
 import {motion, Variants} from 'framer-motion'
 import {Instagram, RSS, Twitter, Youtube} from './Icons'
+import {FC} from 'react'
+import {NavbarType} from '@/typings'
+import Image from 'next/image'
+import {usePathname} from 'next/navigation'
 
 const headerVariants: Variants = {
   hidden: {},
@@ -70,7 +74,8 @@ const socialLinks = [
   {icon: <RSS />, href: '/rss', label: 'RSS Feed'},
 ]
 
-const Header = () => {
+const Header: FC<{navbar: NavbarType}> = ({navbar}) => {
+  const pathname = usePathname()
   return (
     <nav>
       <motion.div
@@ -82,36 +87,48 @@ const Header = () => {
         <div className="overflow-hidden">
           <motion.div variants={maskedTextVariants}>
             <Link href="/" className="text-xl font-semibold">
-              FYRRE MAGAZINE
+              <Image
+                src={(navbar.logo as any)?.asset?.url || ''}
+                alt={navbar?.logo?.alt || 'Logo'}
+                width={220}
+                height={20}
+                className="object-contain"
+              />
             </Link>
           </motion.div>
         </div>
 
         <ul className="flex items-center gap-6">
-          <Link href="/magazine" className="text-xl">
-            Magazine
-          </Link>
-          <Link href="/authors" className="text-xl">
-            Authors
-          </Link>
-          <Link href="/podcast" className="text-xl">
-            Podcast
-          </Link>
+          {navbar?.navLinks?.map((link, idx) => {
+            const isActive = pathname.includes(link.url)
+            return (
+              <motion.li key={link.url} className="relative flex items-center">
+                <Link href={link.url} className="text-xl">
+                  {link.text}
+                </Link>
+              </motion.li>
+            )
+          })}
 
           <div className="w-[0.9375rem] h-px bg-black"></div>
 
           <motion.div className="flex space-x-4" variants={socialContainerVariants}>
-            {socialLinks.map((social, index) => (
+            {navbar?.socialLinks?.map((social, index) => (
               <motion.a
                 key={index}
-                href={social.href}
+                href={social.url}
                 className="text-black transition-colors duration-200"
-                aria-label={social.label}
+                aria-label={social.platform}
                 target="_blank"
                 variants={socialVariants}
                 whileHover={{scale: 1.1}}
               >
-                {social.icon}
+                <Image
+                  src={(social?.icon as any).asset?.url}
+                  alt={social.platform}
+                  width={24}
+                  height={24}
+                />
               </motion.a>
             ))}
           </motion.div>
