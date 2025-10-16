@@ -45,6 +45,170 @@ export const podcastSectionQuery = `
   }
 `
 
+// Query for authors section in page builder
+export const authorsSectionQuery = `
+  _type == "authorsSection" => {
+    _key,
+    _type,
+    sectionTitle,
+    authors[]->{
+      _id,
+      _type,
+      name,
+      "slug": slug.current,
+      image {
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        alt,
+        hotspot,
+        crop
+      },
+      job,
+      city,
+      bio,
+      socialLinks {
+        instagram,
+        twitter,
+        youtube
+      },
+      featured,
+      "articleCount": count(*[_type == 'magazine' && author._ref == ^._id])
+    },
+    limit,
+    showAllAuthorsLink,
+    allAuthorsLinkText,
+    allAuthorsLinkUrl
+  }
+`
+
+// Query for author slugs (for static generation)
+export const authorSlugsQuery = defineQuery(`
+  *[_type == 'author'] {
+    "slug": slug.current
+  }
+`)
+
+// // Query for author with their articles (combined)
+// export const authorWithArticlesQuery = defineQuery(`
+//   *[_type == 'author' && slug.current == $slug][0] {
+//     _id,
+//     _type,
+//     name,
+//     "slug": slug.current,
+//     image {
+//       asset->{
+//         _id,
+//         url,
+//         metadata {
+//           lqip,
+//           dimensions {
+//             width,
+//             height,
+//             aspectRatio
+//           }
+//         }
+//       },
+//       alt,
+//       hotspot,
+//       crop
+//     },
+//     job,
+//     city,
+//     bio,
+//     fullBio,
+//     intro,
+//     socialLinks {
+//       instagram,
+//       twitter,
+//       youtube
+//     },
+//     featured,
+//     "articles": *[_type == 'magazine' && author._ref == ^._id] | order(publishedAt desc) {
+//       _id,
+//       _type,
+//       title,
+//       "slug": slug.current,
+//       thumbnail {
+//         asset->{
+//           _id,
+//           url,
+//           metadata {
+//             lqip,
+//             dimensions {
+//               width,
+//               height,
+//               aspectRatio
+//             }
+//           }
+//         },
+//         alt,
+//         hotspot,
+//         crop
+//       },
+//       publishedAt,
+//       duration
+//     },
+//     "articleCount": count(*[_type == 'magazine' && author._ref == ^._id]),
+//     seo {
+//       metaTitle,
+//       metaDescription
+//     }
+//   }
+// `)
+
+// // Query for single author detail page
+// export const authorDetailQuery = defineQuery(`
+//   *[_type == 'author' && slug.current == $slug][0] {
+//     _id,
+//     _type,
+//     name,
+//     "slug": slug.current,
+//     image {
+//       asset->{
+//         _id,
+//         url,
+//         metadata {
+//           lqip,
+//           dimensions {
+//             width,
+//             height,
+//             aspectRatio
+//           }
+//         }
+//       },
+//       alt,
+//       hotspot,
+//       crop
+//     },
+//     job,
+//     city,
+//     bio,
+//     fullBio,
+//     intro,
+//     socialLinks {
+//       instagram,
+//       twitter,
+//       youtube
+//     },
+//     featured,
+//     seo {
+//       metaTitle,
+//       metaDescription
+//     }
+//   }
+// `)
+
+
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]{
   _id,
   title,
@@ -319,7 +483,8 @@ export const getPageQuery = defineQuery(`
           showSidebar
         }
       },
-      ${podcastSectionQuery}
+      ${podcastSectionQuery},
+      ${authorsSectionQuery},
     },
   }
 `)
