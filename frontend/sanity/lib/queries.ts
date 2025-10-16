@@ -515,7 +515,9 @@ export const magazineQuery = defineQuery(`
       crop
     },
     publishedAt,
-    "author": author.name,
+    "author": author->{
+      name
+    },
     duration,
     label,
     featured

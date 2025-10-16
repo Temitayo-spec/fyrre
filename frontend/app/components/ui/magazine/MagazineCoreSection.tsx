@@ -1,18 +1,19 @@
 'use client'
-import {useState, useMemo} from 'react'
-import {magazines} from '@/constants/magazines'
+import {useState, useMemo, FC} from 'react'
 import MagazineCard from './MagazineCard'
 import PaginationButton from './PaginationButton'
 import CategoryButton from './CategoryButton'
+import { Magazine, MagazineQueryResult } from '@/sanity.types'
 
 const ITEMS_PER_PAGE = 6
 
-const MagazineCoreSection = () => {
+const MagazineCoreSection:FC<{magazines: MagazineQueryResult}> = ({magazines}) => {
+  console.log(magazines, "magazines")
   const [activeCategory, setActiveCategory] = useState('All')
   const [currentPage, setCurrentPage] = useState(1)
 
   const categories = useMemo(() => {
-    const cats = new Set(magazines.map((mag) => mag.category))
+    const cats = new Set(magazines.map((mag) => mag?.category))
     return ['All', ...Array.from(cats)]
   }, [])
 
@@ -59,7 +60,7 @@ const MagazineCoreSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 relative border-[0.5px] border-black">
           {currentMagazines.length > 0 ? (
             currentMagazines.map((magazine, index) => (
-              <MagazineCard key={`${magazine.title}-${index}`} magazine={magazine} />
+              <MagazineCard key={`${magazine.title}-${index}`} magazine={magazine as MagazineQueryResult[0]} />
             ))
           ) : (
             <div className="col-span-full p-12 text-center">

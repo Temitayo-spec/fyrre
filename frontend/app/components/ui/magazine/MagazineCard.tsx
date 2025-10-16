@@ -1,14 +1,15 @@
-import { Magazine } from '@/typings'
+import {formatDate} from '@/lib'
+import {MagazineQueryResult} from '@/sanity.types'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const MagazineCard = ({magazine}: {magazine: Magazine}) => (
+const MagazineCard = ({magazine}: {magazine: MagazineQueryResult[0]}) => (
   <Link href={`/magazine/${magazine.title.toLowerCase()}`} className="group">
     <article className="magazine-card p-[2.5rem] border-[0.5px] border-black gap-y-8 min-h-[54rem] flex flex-col hover:bg-gray-50 transition-colors">
       <div className="magazine-card-content flex flex-col gap-y-8 h-full flex-1">
         <div className="flex items-center justify-between">
           <time className="text-sm leading-[160%]" dateTime={magazine.publishedAt}>
-            {magazine.publishedAt}
+            {formatDate(magazine.publishedAt)}
           </time>
           <span className="py-2 px-3 rounded-[6.25rem] border border-black text-xs uppercase">
             {magazine.category}
@@ -17,7 +18,7 @@ const MagazineCard = ({magazine}: {magazine: Magazine}) => (
 
         <div className="relative">
           <Image
-            src={magazine.thumbnail}
+            src={(magazine?.thumbnail as any)?.asset?.url}
             alt={magazine.title}
             className="object-contain"
             quality={100}
@@ -37,7 +38,7 @@ const MagazineCard = ({magazine}: {magazine: Magazine}) => (
           <div className="flex gap-4 text-sm leading-[160%]">
             <p className="flex gap-2">
               <span className="font-semibold">Text</span>
-              <span>{magazine.author}</span>
+              <span>{magazine.author.name}</span>
             </p>
             <p className="flex gap-2">
               <span className="font-semibold">Duration</span>
