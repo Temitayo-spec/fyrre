@@ -8,6 +8,7 @@ import podcast_3 from '@/public/images/podcast_3.png'
 import arrow from '@/public/svgs/arrow.svg'
 import Image, {StaticImageData} from 'next/image'
 import Link from 'next/link'
+import {Podcast, PodcastSection as PodcastSectionType} from '@/sanity.types'
 
 const podcasts = [
   {
@@ -108,7 +109,7 @@ const lineVariants: Variants = {
   },
 }
 
-const PodcastSection = () => {
+const PodcastSection: FC<{props: PodcastSectionType}> = ({props}) => {
   return (
     <section className="mt-24">
       <div className="wrapper flex flex-col gap-24">
@@ -124,13 +125,13 @@ const PodcastSection = () => {
               className="text-[6.5rem] font-semibold leading-[110%] uppercase"
               variants={maskedTextVariants}
             >
-              Podcast
+              {props?.sectionTitle}
             </motion.h2>
           </div>
 
           <div className="overflow-hidden">
             <motion.div variants={linkContainerVariants}>
-              <LinkWithSVG text="All Episodes" href="/podcast" />
+              <LinkWithSVG text={props?.allEpisodesLinkText || 'All Episodes'} href={props?.allEpisodesLinkUrl || '/podcast'} />
             </motion.div>
           </div>
 
@@ -144,15 +145,15 @@ const PodcastSection = () => {
         </motion.header>
 
         <motion.div
-          className="flex relative border-[0.5px] border-black"
+          className="flex relative border-[0.5px] border-x-0 border-black"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{once: true, amount: 0.3}}
         >
-          {podcasts.map((podcast, index) => (
+          {props?.episodes?.map((podcast, index) => (
             <motion.div key={index} variants={itemVariants} className="flex-1 relative">
-              <PodcastCard {...podcast} />
+              <PodcastCard {...(podcast as unknown as Podcast)} podcastBranding={props.podcastBranding} />
               {index < podcasts.length - 1 && (
                 <motion.div
                   className="absolute top-0 right-0 w-[1px] h-full bg-black"
@@ -165,15 +166,35 @@ const PodcastSection = () => {
             </motion.div>
           ))}
           <motion.div
-            className="absolute top-0 left-0 w-full h-[0.5px] bg-black"
-            variants={lineVariants}
+            className="absolute top-0 left-0 h-full w-[0.5px] bg-black"
+            variants={{
+              hidden: {scaleY: 0, originY: 0},
+              visible: {
+                scaleY: 1,
+                transition: {
+                  duration: 0.8,
+                  ease: 'easeOut',
+                  delay: 0.6,
+                },
+              },
+            }}
             initial="hidden"
             whileInView="visible"
             viewport={{once: true, amount: 0.5}}
           />
           <motion.div
-            className="absolute bottom-0 left-0 w-full h-[0.5px] bg-black"
-            variants={lineVariants}
+            className="absolute top-0 right-0 h-full w-[0.5px] bg-black"
+            variants={{
+              hidden: {scaleY: 0, originY: 0},
+              visible: {
+                scaleY: 1,
+                transition: {
+                  duration: 0.8,
+                  ease: 'easeOut',
+                  delay: 0.6,
+                },
+              },
+            }}
             initial="hidden"
             whileInView="visible"
             viewport={{once: true, amount: 0.5}}
@@ -186,38 +207,46 @@ const PodcastSection = () => {
 
 export default PodcastSection
 
-export const PodcastCard: FC<Podcast> = ({
+export const PodcastCard: FC<Podcast & {
+  podcastBranding?: {
+    name?: string
+    subtitle?: string
+  }
+}> = ({
   thumbnail,
   title,
-  episode_num,
+  episodeNumber,
   publishedAt,
   duration,
   slug,
+  podcastBranding
 }) => {
   return (
-    <Link href={slug} className="flex flex-1">
+    <Link href={`/podcast/${slug}`} className="flex flex-1">
       <motion.div
         className="p-[2.5rem] border-[0.5px] border-black space-y-8 group hover:shadow-lg transition-shadow duration-300"
         transition={{duration: 0.3, ease: 'easeOut'}}
       >
         <div className="relative max-w-[25.5965rem] flex-1">
           <Image
-            src={thumbnail}
+            src={(thumbnail.asset as any).url}
             alt="podcast"
             className="object-cover h-[25.4375rem] group-hover:brightness-110 transition-all duration-300"
             quality={100}
+            width={400}
+            height={500}
           />
 
           <div className="absolute top-4 left-4">
-            <h3 className="text-[3.17969rem] uppercase font-semibold text-white">Fyrre</h3>
+            <h3 className="text-[3.17969rem] uppercase font-semibold text-white">{podcastBranding?.name}</h3>
             <p className="text-[1.58981rem] uppercase font-semibold text-white -translate-y-6 inline-flex">
-              Podcast
+              {podcastBranding?.subtitle}
             </p>
           </div>
 
           <div className="absolute bottom-[1.47rem] px-4 flex items-end justify-between w-full">
             <h4 className="text-[1.58981rem] font-semibold text-white uppercase">
-              EP{episode_num}
+              EP{episodeNumber}
             </h4>
             <Image src={arrow} alt="arrow" />
           </div>

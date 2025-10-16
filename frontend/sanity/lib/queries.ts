@@ -1,4 +1,49 @@
-import {defineQuery} from 'next-sanity'
+import { defineQuery } from 'next-sanity'
+
+// Query for podcast section in page builder
+export const podcastSectionQuery = `
+  _type == "podcastSection" => {
+    _key,
+    _type,
+    sectionTitle,
+    episodes[]->{
+      _id,
+      _type,
+      title,
+      "slug": slug.current,
+      episodeNumber,
+      thumbnail {
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        alt,
+        hotspot,
+        crop
+      },
+      publishedAt,
+      duration
+    },
+    showAllEpisodesLink,
+    allEpisodesLinkText,
+    allEpisodesLinkUrl,
+    podcastBranding {
+      name,
+      subtitle
+    },
+    animations {
+      enabled
+    }
+  }
+`
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]{
   _id,
@@ -274,6 +319,7 @@ export const getPageQuery = defineQuery(`
           showSidebar
         }
       },
+      ${podcastSectionQuery}
     },
   }
 `)
@@ -521,3 +567,157 @@ export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
   {"slug": slug.current}
 `)
+
+
+// Query for podcast listing page
+export const podcastsQuery = defineQuery(`
+  *[_type == 'podcast'] | order(episodeNumber desc) {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    episodeNumber,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    publishedAt,
+    duration,
+    featured
+  }
+`)
+
+// Query for single podcast detail page
+export const podcastDetailQuery = defineQuery(`
+  *[_type == 'podcast' && slug.current == $slug][0] {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    episodeNumber,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    publishedAt,
+    duration,
+    excerpt,
+    content,
+    podcastLinks {
+      spotify,
+      apple,
+      soundcloud
+    },
+    socialShare {
+      instagram,
+      twitter,
+      youtube
+    },
+    featured,
+    seo {
+      metaTitle,
+      metaDescription,
+      ogImage {
+        asset->{
+          _id,
+          url
+        }
+      }
+    }
+  }
+`)
+
+// Query for latest podcasts (excluding current)
+export const latestPodcastsQuery = defineQuery(`
+  *[_type == 'podcast' && slug.current != $slug] | order(episodeNumber desc) [0..2] {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    episodeNumber,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    publishedAt,
+    duration
+  }
+`)
+
+// Query for featured podcasts
+export const featuredPodcastsQuery = defineQuery(`
+  *[_type == 'podcast' && featured == true] | order(episodeNumber desc) [0..5] {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    episodeNumber,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    publishedAt,
+    duration,
+    featured
+  }
+`)
+
+// Query for podcast slugs (for static generation)
+export const podcastSlugsQuery = defineQuery(`
+  *[_type == 'podcast'] {
+    "slug": slug.current
+  }
+`)
+
