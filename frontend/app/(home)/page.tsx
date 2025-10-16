@@ -11,7 +11,7 @@ import {HomeHeroSection, ArticlesSection, PodcastSection, AuthorsSection} from '
 import {Metadata} from 'next'
 import * as demo from '@/sanity/lib/demo'
 import {getSectionByType} from '@/lib'
-import { HeroSection } from '@/sanity.types'
+import { ArticlesSection as ArticlesSectionType, HeroSection } from '@/sanity.types'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [{data: page}, {data: settings}] = await Promise.all([
@@ -33,8 +33,12 @@ export default async function Page() {
   ])
   return (
     <>
-      <HomeHeroSection props={getSectionByType(page?.pageBuilder ?? [], 'heroSection') as HeroSection} />
-      <ArticlesSection />
+      <HomeHeroSection
+        props={getSectionByType(page?.pageBuilder ?? [], 'heroSection') as HeroSection}
+      />
+      <ArticlesSection
+        props={getSectionByType(page?.pageBuilder ?? [], 'articlesSection') as ArticlesSectionType}
+      />
       <PodcastSection />
       <AuthorsSection />
     </>

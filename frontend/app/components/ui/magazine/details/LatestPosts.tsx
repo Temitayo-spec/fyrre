@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import MagazineCard from '../MagazineCard'
+import { Magazine } from '@/typings';
 
 const LatestPosts = ({slug, magazines}: {slug: string; magazines: Magazine[]}) => {
   const filteredMagazines = magazines.filter(

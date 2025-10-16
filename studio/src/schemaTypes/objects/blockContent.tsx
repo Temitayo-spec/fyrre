@@ -92,5 +92,59 @@ export const blockContent = defineType({
         ],
       },
     }),
+    defineArrayMember({
+      type: 'object',
+      name: 'quote',
+      title: 'Pull Quote',
+      fields: [
+        defineField({
+          name: 'text',
+          title: 'Quote Text',
+          type: 'text',
+          rows: 4,
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'attribution',
+          title: 'Attribution',
+          type: 'string',
+          description: 'Person or source of the quote',
+        }),
+      ],
+      preview: {
+        select: {
+          title: 'text',
+          subtitle: 'attribution',
+        },
+        prepare({title, subtitle}) {
+          return {
+            title: `"${title}"`,
+            subtitle: subtitle || 'Anonymous',
+            media: () => '💬',
+          }
+        },
+      },
+    }),
+    defineArrayMember({
+      type: 'image',
+      name: 'contentImage',
+      title: 'Image',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        defineField({
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative Text',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+        }),
+      ],
+    }),
   ],
 })

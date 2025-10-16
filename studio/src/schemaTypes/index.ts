@@ -14,12 +14,17 @@ import {newsletter} from './objects/newsletter'
 import {socialLink} from './objects/socialLink'
 import {button} from './objects/button'
 import {heroSection} from './objects/herosection'
+import {magazine} from './singletons/magazine'
+import {articlesSection} from './objects/articlesSection'
+import { author } from './singletons/author'
 
 // Export an array of all the schema types.  This is used in the Sanity Studio configuration. https://www.sanity.io/docs/schema-types
 
 export const schemaTypes = [
   // Singletons
   settings,
+  magazine,
+  author,
   // Documents
   page,
   post,
@@ -37,4 +42,5 @@ export const schemaTypes = [
   newsletter,
   socialLink,
   button,
+  articlesSection,
 ]

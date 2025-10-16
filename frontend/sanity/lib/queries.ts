@@ -180,16 +180,302 @@ export const getPageQuery = defineQuery(`
           backgroundColor
         }
       },
-      // _type == "infoSection" => {
-      //   content[]{
-      //     ...,
-      //     markDefs[]{
-      //       ...,
-      //       ${linkReference}
-      //     }
-      //   }
-      // },
+      _type == "articlesSection" => {
+        _key,
+        _type,
+        sectionTitle,
+        articles[]->{
+          ...,
+          _id,
+          _type,
+          title,
+          "slug": slug.current,
+          excerpt,
+          category,
+          thumbnail {
+            asset->{
+              _id,
+              url,
+              metadata {
+                lqip,
+                dimensions {
+                  width,
+                  height,
+                  aspectRatio
+                }
+              }
+            },
+            alt,
+            hotspot,
+            crop
+          },
+          publishedAt,
+          "author": author->{
+            name
+          },
+          duration
+        },
+        showAllArticlesLink,
+        allArticlesLinkText,
+        allArticlesLinkUrl,
+        sidebar {
+          printMagazine {
+            enabled,
+            label,
+            issue,
+            coverImage {
+              asset->{
+                _id,
+                url,
+                metadata {
+                  lqip,
+                  dimensions {
+                    width,
+                    height,
+                    aspectRatio
+                  }
+                }
+              },
+              alt,
+              hotspot,
+              crop
+            },
+            buttonText,
+            buttonLink
+          },
+          mostPopular {
+            enabled,
+            title,
+            articles[]->{
+              _id,
+              _type,
+              title,
+              "slug": slug.current,
+              "author": author->{
+                name
+              }
+            }
+          },
+          newsletter {
+            enabled,
+            label,
+            heading,
+            placeholder,
+            buttonText,
+            backgroundColor
+          }
+        },
+        animations {
+          enabled,
+          animationDuration
+        },
+        layout {
+          mainColumnWidth,
+          showSidebar
+        }
+      },
     },
+  }
+`)
+
+export const magazineQuery = defineQuery(`
+  *[_type == 'magazine'] | order(publishedAt desc) {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    excerpt,
+    category,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    publishedAt,
+    "author": author.name,
+    duration,
+    label,
+    featured
+  }
+`)
+
+export const magazineDetailQuery = defineQuery(`
+  *[_type == 'magazine' && slug.current == $slug][0] {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    excerpt,
+    category,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    heroImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    heroDescription,
+    publishedAt,
+    author {
+      name,
+      image {
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        alt,
+        hotspot,
+        crop
+      },
+      bio
+    },
+    duration,
+    label,
+    content[] {
+      ...,
+      markDefs[]{
+      ...,
+      ${linkReference}
+     },
+    },
+    // quote {
+    //   text,
+    //   attribution
+    // },
+    socialShare {
+      instagram,
+      twitter,
+      youtube
+    },
+    featured,
+    seo {
+      metaTitle,
+      metaDescription,
+      ogImage {
+        asset->{
+          _id,
+          url
+        }
+      }
+    }
+  }
+`)
+
+export const featuredMagazinesQuery = defineQuery(`
+  *[_type == 'magazine' && featured == true] | order(publishedAt desc) [0..5] {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    excerpt,
+    category,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    publishedAt,
+    "author": author.name,
+    duration,
+    label,
+    featured
+  }
+`)
+
+export const latestMagazinesQuery = defineQuery(`
+  *[_type == 'magazine' && slug.current != $slug] | order(publishedAt desc) [0..2] {
+    _id,
+    _type,
+    title,
+    "slug": slug.current,
+    excerpt,
+    category,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    publishedAt,
+    "author": author.name,
+    duration,
+    label
+  }
+`)
+
+export const magazineSlugsQuery = defineQuery(`
+  *[_type == 'magazine'] {
+    "slug": slug.current
   }
 `)
 

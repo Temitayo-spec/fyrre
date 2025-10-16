@@ -13,6 +13,70 @@
  */
 
 // Source: schema.json
+export type ArticlesSection = {
+  _type: 'articlesSection'
+  sectionTitle?: string
+  articles: Array<{
+    _ref: string
+    _type: 'reference'
+    _weak?: boolean
+    _key: string
+    [internalGroqTypeReferenceTo]?: 'magazine'
+  }>
+  showAllArticlesLink?: boolean
+  allArticlesLinkText?: string
+  allArticlesLinkUrl?: string
+  sidebar?: {
+    printMagazine?: {
+      enabled?: boolean
+      label?: string
+      issue: string
+      coverImage: {
+        asset?: {
+          _ref: string
+          _type: 'reference'
+          _weak?: boolean
+          [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+        }
+        media?: unknown
+        hotspot?: SanityImageHotspot
+        crop?: SanityImageCrop
+        alt: string
+        _type: 'image'
+      }
+      buttonText?: string
+      buttonLink?: string
+    }
+    mostPopular?: {
+      enabled?: boolean
+      title?: string
+      articles?: Array<{
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        _key: string
+        [internalGroqTypeReferenceTo]?: 'magazine'
+      }>
+    }
+    newsletter?: {
+      enabled?: boolean
+      label?: string
+      heading?: string
+      placeholder?: string
+      buttonText?: string
+      backgroundColor?: string
+    }
+  }
+  animations?: {
+    enabled?: boolean
+    animationDuration?: number
+  }
+  layout?: {
+    mainColumnWidth?: '3/4' | '2/3' | '3/5'
+    showSidebar?: boolean
+  }
+}
+
 export type SocialLink = {
   _type: 'socialLink'
   platform: string
@@ -224,6 +288,92 @@ export type BlockContent = Array<{
   _key: string
 }>
 
+export type Magazine = {
+  _id: string
+  _type: 'magazine'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  excerpt: string
+  category: 'art' | 'culture' | 'design' | 'photography' | 'fashion' | 'lifestyle'
+  thumbnail: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'image'
+  }
+  heroImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'image'
+  }
+  publishedAt: string
+  author: {
+    name: string
+    image?: {
+      asset?: {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+      }
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      alt?: string
+      _type: 'image'
+    }
+    bio?: string
+  }
+  duration: number
+  label?: string
+  heroDescription: string
+  content: BlockContent
+  quote?: {
+    text: string
+    attribution?: string
+  }
+  socialShare?: {
+    instagram?: string
+    twitter?: string
+    youtube?: string
+  }
+  featured?: boolean
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+    ogImage?: {
+      asset?: {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+      }
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+  }
+}
+
 export type Post = {
   _id: string
   _type: 'post'
@@ -290,9 +440,12 @@ export type Page = {
   heading: string
   subheading?: string
   pageBuilder?: Array<
-    {
-      _key: string
-    } & HeroSection
+    | ({
+        _key: string
+      } & HeroSection)
+    | ({
+        _key: string
+      } & ArticlesSection)
   >
 }
 
@@ -688,6 +841,7 @@ export type SanityAssetSourceData = {
 }
 
 export type AllSanitySchemaTypes =
+  | ArticlesSection
   | SocialLink
   | NavLink
   | Marquee
@@ -698,6 +852,7 @@ export type AllSanitySchemaTypes =
   | HeroSection
   | InfoSection
   | BlockContent
+  | Magazine
   | Post
   | Person
   | Page
@@ -848,7 +1003,7 @@ export type SettingsQueryResult = {
   } | null
 } | null
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,        _type == "heroSection" => {        _key,        _type,        heroText {          enabled,          strokeColor {            hex          },          fillColor {            hex          }        },        newsTicker {          enabled,          label,          backgroundColor,          textColor,          items[] {            text          },          speed        },        heroHeading,        description,        metadata {          author {            label,            name          },          date {            label,            value          },          duration {            label,            value          }        },        label {          text,          borderColor,          textColor        },        heroImage {          asset->{            _id,            url,            metadata {              lqip,              dimensions {                width,                height,                aspectRatio              }            }          },          alt,          hotspot,          crop        },        animations {          enabled,          parallaxStrength        },        styling {          headingColor,          descriptionColor,          backgroundColor        }      },      // _type == "infoSection" => {      //   content[]{      //     ...,      //     markDefs[]{      //       ...,      //         _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      //     }      //   }      // },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,        _type == "heroSection" => {        _key,        _type,        heroText {          enabled,          strokeColor {            hex          },          fillColor {            hex          }        },        newsTicker {          enabled,          label,          backgroundColor,          textColor,          items[] {            text          },          speed        },        heroHeading,        description,        metadata {          author {            label,            name          },          date {            label,            value          },          duration {            label,            value          }        },        label {          text,          borderColor,          textColor        },        heroImage {          asset->{            _id,            url,            metadata {              lqip,              dimensions {                width,                height,                aspectRatio              }            }          },          alt,          hotspot,          crop        },        animations {          enabled,          parallaxStrength        },        styling {          headingColor,          descriptionColor,          backgroundColor        }      },      _type == "articlesSection" => {        _key,        _type,        sectionTitle,        articles[]->{          ...,          _id,          _type,          title,          "slug": slug.current,          excerpt,          category,          thumbnail {            asset->{              _id,              url,              metadata {                lqip,                dimensions {                  width,                  height,                  aspectRatio                }              }            },            alt,            hotspot,            crop          },          publishedAt,          "author": author->{            name          },          duration        },        showAllArticlesLink,        allArticlesLinkText,        allArticlesLinkUrl,        sidebar {          printMagazine {            enabled,            label,            issue,            coverImage {              asset->{                _id,                url,                metadata {                  lqip,                  dimensions {                    width,                    height,                    aspectRatio                  }                }              },              alt,              hotspot,              crop            },            buttonText,            buttonLink          },          mostPopular {            enabled,            title,            articles[]->{              _id,              _type,              title,              "slug": slug.current,              author {                name              }            }          },          newsletter {            enabled,            label,            heading,            placeholder,            buttonText,            backgroundColor          }        },        animations {          enabled,          animationDuration        },        layout {          mainColumnWidth,          showSidebar        }      },    },  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -856,50 +1011,295 @@ export type GetPageQueryResult = {
   slug: Slug
   heading: string
   subheading: string | null
-  pageBuilder: Array<{
-    _key: string
-    _type: 'heroSection'
-    heroText: {
-      enabled: boolean | null
-      strokeColor: {
-        hex: string | null
-      } | null
-      fillColor: {
-        hex: string | null
+  pageBuilder: Array<
+    | {
+        _key: string
+        _type: 'articlesSection'
+        sectionTitle: string | null
+        articles: Array<{
+          _id: string
+          _type: 'magazine'
+          _createdAt: string
+          _updatedAt: string
+          _rev: string
+          title: string
+          slug: string
+          excerpt: string
+          category: 'art' | 'culture' | 'design' | 'fashion' | 'lifestyle' | 'photography'
+          thumbnail: {
+            asset: {
+              _id: string
+              url: string | null
+              metadata: {
+                lqip: string | null
+                dimensions: {
+                  width: number
+                  height: number
+                  aspectRatio: number
+                } | null
+              } | null
+            } | null
+            alt: string
+            hotspot: SanityImageHotspot | null
+            crop: SanityImageCrop | null
+          }
+          heroImage: {
+            asset?: {
+              _ref: string
+              _type: 'reference'
+              _weak?: boolean
+              [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+            }
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            alt: string
+            _type: 'image'
+          }
+          publishedAt: string
+          author: null
+          duration: number
+          label?: string
+          heroDescription: string
+          content: BlockContent
+          quote?: {
+            text: string
+            attribution?: string
+          }
+          socialShare?: {
+            instagram?: string
+            twitter?: string
+            youtube?: string
+          }
+          featured?: boolean
+          seo?: {
+            metaTitle?: string
+            metaDescription?: string
+            ogImage?: {
+              asset?: {
+                _ref: string
+                _type: 'reference'
+                _weak?: boolean
+                [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+              }
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              _type: 'image'
+            }
+          }
+        }>
+        showAllArticlesLink: boolean | null
+        allArticlesLinkText: string | null
+        allArticlesLinkUrl: string | null
+        sidebar: {
+          printMagazine: {
+            enabled: boolean | null
+            label: string | null
+            issue: string
+            coverImage: {
+              asset: {
+                _id: string
+                url: string | null
+                metadata: {
+                  lqip: string | null
+                  dimensions: {
+                    width: number
+                    height: number
+                    aspectRatio: number
+                  } | null
+                } | null
+              } | null
+              alt: string
+              hotspot: SanityImageHotspot | null
+              crop: SanityImageCrop | null
+            }
+            buttonText: string | null
+            buttonLink: string | null
+          } | null
+          mostPopular: {
+            enabled: boolean | null
+            title: string | null
+            articles: Array<{
+              _id: string
+              _type: 'magazine'
+              title: string
+              slug: string
+              author: {
+                name: string
+              }
+            }> | null
+          } | null
+          newsletter: {
+            enabled: boolean | null
+            label: string | null
+            heading: string | null
+            placeholder: string | null
+            buttonText: string | null
+            backgroundColor: string | null
+          } | null
+        } | null
+        animations: {
+          enabled: boolean | null
+          animationDuration: number | null
+        } | null
+        layout: {
+          mainColumnWidth: '2/3' | '3/4' | '3/5' | null
+          showSidebar: boolean | null
+        } | null
+      }
+    | {
+        _key: string
+        _type: 'heroSection'
+        heroText: {
+          enabled: boolean | null
+          strokeColor: {
+            hex: string | null
+          } | null
+          fillColor: {
+            hex: string | null
+          } | null
+        } | null
+        newsTicker: {
+          enabled: boolean | null
+          label: string
+          backgroundColor: string | null
+          textColor: string | null
+          items: Array<{
+            text: string
+          }>
+          speed: number | null
+        } | null
+        heroHeading: string
+        description: string
+        metadata: {
+          author: {
+            label: string | null
+            name: string
+          } | null
+          date: {
+            label: string | null
+            value: string
+          } | null
+          duration: {
+            label: string | null
+            value: string
+          } | null
+        } | null
+        label: {
+          text: string
+          borderColor: string | null
+          textColor: string | null
+        } | null
+        heroImage: {
+          asset: {
+            _id: string
+            url: string | null
+            metadata: {
+              lqip: string | null
+              dimensions: {
+                width: number
+                height: number
+                aspectRatio: number
+              } | null
+            } | null
+          } | null
+          alt: string
+          hotspot: SanityImageHotspot | null
+          crop: SanityImageCrop | null
+        }
+        animations: {
+          enabled: boolean | null
+          parallaxStrength: number | null
+        } | null
+        styling: {
+          headingColor: string | null
+          descriptionColor: string | null
+          backgroundColor: string | null
+        } | null
+      }
+  > | null
+} | null
+// Variable: magazineQuery
+// Query: *[_type == 'magazine'] | order(publishedAt desc) {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    "author": author.name,    duration,    label,    featured  }
+export type MagazineQueryResult = Array<{
+  _id: string
+  _type: 'magazine'
+  title: string
+  slug: string
+  excerpt: string
+  category: 'art' | 'culture' | 'design' | 'fashion' | 'lifestyle' | 'photography'
+  thumbnail: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
       } | null
     } | null
-    newsTicker: {
-      enabled: boolean | null
-      label: string
-      backgroundColor: string | null
-      textColor: string | null
-      items: Array<{
-        text: string
-      }>
-      speed: number | null
-    } | null
-    heroHeading: string
-    description: string
-    metadata: {
-      author: {
-        label: string | null
-        name: string
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  publishedAt: string
+  author: string
+  duration: number
+  label: string | null
+  featured: boolean | null
+}>
+// Variable: magazineDetailQuery
+// Query: *[_type == 'magazine' && slug.current == $slug][0] {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    heroImage {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    heroDescription,    publishedAt,    author {      name,      image {        asset->{          _id,          url,          metadata {            lqip,            dimensions {              width,              height,              aspectRatio            }          }        },        alt,        hotspot,        crop      },      bio    },    duration,    label,    content[] {      ...,      markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }     },    },    // quote {    //   text,    //   attribution    // },    socialShare {      instagram,      twitter,      youtube    },    featured,    seo {      metaTitle,      metaDescription,      ogImage {        asset->{          _id,          url        }      }    }  }
+export type MagazineDetailQueryResult = {
+  _id: string
+  _type: 'magazine'
+  title: string
+  slug: string
+  excerpt: string
+  category: 'art' | 'culture' | 'design' | 'fashion' | 'lifestyle' | 'photography'
+  thumbnail: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
       } | null
-      date: {
-        label: string | null
-        value: string
-      } | null
-      duration: {
-        label: string | null
-        value: string
+    } | null
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  heroImage: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
       } | null
     } | null
-    label: {
-      text: string
-      borderColor: string | null
-      textColor: string | null
-    } | null
-    heroImage: {
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  heroDescription: string
+  publishedAt: string
+  author: {
+    name: string
+    image: {
       asset: {
         _id: string
         url: string | null
@@ -912,21 +1312,121 @@ export type GetPageQueryResult = {
           } | null
         } | null
       } | null
-      alt: string
+      alt: string | null
       hotspot: SanityImageHotspot | null
       crop: SanityImageCrop | null
-    }
-    animations: {
-      enabled: boolean | null
-      parallaxStrength: number | null
     } | null
-    styling: {
-      headingColor: string | null
-      descriptionColor: string | null
-      backgroundColor: string | null
+    bio: string | null
+  }
+  duration: number
+  label: string | null
+  content: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+    listItem?: 'bullet' | 'number'
+    markDefs: Array<{
+      linkType?: 'href' | 'page' | 'post'
+      href?: string
+      page: string | null
+      post: string | null
+      openInNewTab?: boolean
+      _type: 'link'
+      _key: string
+    }> | null
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  socialShare: {
+    instagram: string | null
+    twitter: string | null
+    youtube: string | null
+  } | null
+  featured: boolean | null
+  seo: {
+    metaTitle: string | null
+    metaDescription: string | null
+    ogImage: {
+      asset: {
+        _id: string
+        url: string | null
+      } | null
     } | null
-  }> | null
+  } | null
 } | null
+// Variable: featuredMagazinesQuery
+// Query: *[_type == 'magazine' && featured == true] | order(publishedAt desc) [0..5] {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    "author": author.name,    duration,    label,    featured  }
+export type FeaturedMagazinesQueryResult = Array<{
+  _id: string
+  _type: 'magazine'
+  title: string
+  slug: string
+  excerpt: string
+  category: 'art' | 'culture' | 'design' | 'fashion' | 'lifestyle' | 'photography'
+  thumbnail: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  publishedAt: string
+  author: string
+  duration: number
+  label: string | null
+  featured: boolean | null
+}>
+// Variable: latestMagazinesQuery
+// Query: *[_type == 'magazine' && slug.current != $slug] | order(publishedAt desc) [0..2] {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    "author": author.name,    duration,    label  }
+export type LatestMagazinesQueryResult = Array<{
+  _id: string
+  _type: 'magazine'
+  title: string
+  slug: string
+  excerpt: string
+  category: 'art' | 'culture' | 'design' | 'fashion' | 'lifestyle' | 'photography'
+  thumbnail: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  publishedAt: string
+  author: string
+  duration: number
+  label: string | null
+}>
+// Variable: magazineSlugsQuery
+// Query: *[_type == 'magazine'] {    "slug": slug.current  }
+export type MagazineSlugsQueryResult = Array<{
+  slug: string
+}>
 // Variable: sitemapData
 // Query: *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
 export type SitemapDataResult = Array<
@@ -1099,7 +1599,12 @@ import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
     '*[_type == "settings"][0]{\n  _id,\n  title,\n  description,\n  ogImage,\n  footer {\n    newsletter {\n      active,\n      title,\n      description,\n      inputPlaceholder,\n      buttonText,\n    },\n    marquee,\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    tagline,\n    description,\n    navLinks[] {\n      text,\n      url\n    },\n    copyright,\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n  },\n  navbar {\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    navLinks[] {\n      text,\n      url\n    },\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n    button {\n      text,\n      link {\n        _type,\n        _key,\n        linkType,\n        page,\n        url,\n        href,\n        openInNewTab\n      },\n      type\n    }\n  }\n}': SettingsQueryResult
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n        _type == "heroSection" => {\n        _key,\n        _type,\n        heroText {\n          enabled,\n          strokeColor {\n            hex\n          },\n          fillColor {\n            hex\n          }\n        },\n        newsTicker {\n          enabled,\n          label,\n          backgroundColor,\n          textColor,\n          items[] {\n            text\n          },\n          speed\n        },\n        heroHeading,\n        description,\n        metadata {\n          author {\n            label,\n            name\n          },\n          date {\n            label,\n            value\n          },\n          duration {\n            label,\n            value\n          }\n        },\n        label {\n          text,\n          borderColor,\n          textColor\n        },\n        heroImage {\n          asset->{\n            _id,\n            url,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height,\n                aspectRatio\n              }\n            }\n          },\n          alt,\n          hotspot,\n          crop\n        },\n        animations {\n          enabled,\n          parallaxStrength\n        },\n        styling {\n          headingColor,\n          descriptionColor,\n          backgroundColor\n        }\n      },\n      // _type == "infoSection" => {\n      //   content[]{\n      //     ...,\n      //     markDefs[]{\n      //       ...,\n      //       \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      //     }\n      //   }\n      // },\n    },\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n        _type == "heroSection" => {\n        _key,\n        _type,\n        heroText {\n          enabled,\n          strokeColor {\n            hex\n          },\n          fillColor {\n            hex\n          }\n        },\n        newsTicker {\n          enabled,\n          label,\n          backgroundColor,\n          textColor,\n          items[] {\n            text\n          },\n          speed\n        },\n        heroHeading,\n        description,\n        metadata {\n          author {\n            label,\n            name\n          },\n          date {\n            label,\n            value\n          },\n          duration {\n            label,\n            value\n          }\n        },\n        label {\n          text,\n          borderColor,\n          textColor\n        },\n        heroImage {\n          asset->{\n            _id,\n            url,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height,\n                aspectRatio\n              }\n            }\n          },\n          alt,\n          hotspot,\n          crop\n        },\n        animations {\n          enabled,\n          parallaxStrength\n        },\n        styling {\n          headingColor,\n          descriptionColor,\n          backgroundColor\n        }\n      },\n      _type == "articlesSection" => {\n        _key,\n        _type,\n        sectionTitle,\n        articles[]->{\n          ...,\n          _id,\n          _type,\n          title,\n          "slug": slug.current,\n          excerpt,\n          category,\n          thumbnail {\n            asset->{\n              _id,\n              url,\n              metadata {\n                lqip,\n                dimensions {\n                  width,\n                  height,\n                  aspectRatio\n                }\n              }\n            },\n            alt,\n            hotspot,\n            crop\n          },\n          publishedAt,\n          "author": author->{\n            name\n          },\n          duration\n        },\n        showAllArticlesLink,\n        allArticlesLinkText,\n        allArticlesLinkUrl,\n        sidebar {\n          printMagazine {\n            enabled,\n            label,\n            issue,\n            coverImage {\n              asset->{\n                _id,\n                url,\n                metadata {\n                  lqip,\n                  dimensions {\n                    width,\n                    height,\n                    aspectRatio\n                  }\n                }\n              },\n              alt,\n              hotspot,\n              crop\n            },\n            buttonText,\n            buttonLink\n          },\n          mostPopular {\n            enabled,\n            title,\n            articles[]->{\n              _id,\n              _type,\n              title,\n              "slug": slug.current,\n              author {\n                name\n              }\n            }\n          },\n          newsletter {\n            enabled,\n            label,\n            heading,\n            placeholder,\n            buttonText,\n            backgroundColor\n          }\n        },\n        animations {\n          enabled,\n          animationDuration\n        },\n        layout {\n          mainColumnWidth,\n          showSidebar\n        }\n      },\n    },\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'magazine\'] | order(publishedAt desc) {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    "author": author.name,\n    duration,\n    label,\n    featured\n  }\n': MagazineQueryResult
+    '\n  *[_type == \'magazine\' && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    heroImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    heroDescription,\n    publishedAt,\n    author {\n      name,\n      image {\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height,\n              aspectRatio\n            }\n          }\n        },\n        alt,\n        hotspot,\n        crop\n      },\n      bio\n    },\n    duration,\n    label,\n    content[] {\n      ...,\n      markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n     },\n    },\n    // quote {\n    //   text,\n    //   attribution\n    // },\n    socialShare {\n      instagram,\n      twitter,\n      youtube\n    },\n    featured,\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': MagazineDetailQueryResult
+    '\n  *[_type == \'magazine\' && featured == true] | order(publishedAt desc) [0..5] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    "author": author.name,\n    duration,\n    label,\n    featured\n  }\n': FeaturedMagazinesQueryResult
+    '\n  *[_type == \'magazine\' && slug.current != $slug] | order(publishedAt desc) [0..2] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    "author": author.name,\n    duration,\n    label\n  }\n': LatestMagazinesQueryResult
+    '\n  *[_type == \'magazine\'] {\n    "slug": slug.current\n  }\n': MagazineSlugsQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult

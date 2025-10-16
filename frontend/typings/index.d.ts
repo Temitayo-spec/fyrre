@@ -1,14 +1,4 @@
-import {Footer, Navbar} from '@/sanity.types'
-
-interface Magazine {
-  title: string
-  category: string
-  publishedAt: string
-  thumbnail: string
-  excerpt: string
-  author: string
-  duration: number
-}
+import {Footer, Magazine, Navbar} from '@/sanity.types'
 
 interface Podcast {
   thumbnail: StaticImageData
@@ -22,3 +12,15 @@ interface Podcast {
 interface NavbarType extends Navbar {}
 
 interface FooterType extends Footer {}
+
+interface ArticleRowType extends Omit<Magazine, 'slug'> {
+  isFirst?: boolean
+  isLast?: boolean
+  slug: string
+}
+
+interface MostPopularType extends Magazine {
+  isLast: boolean
+  isFirst: boolean
+  position: number
+}
