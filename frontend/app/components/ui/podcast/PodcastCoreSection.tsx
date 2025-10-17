@@ -58,6 +58,8 @@ const PodcastCoreSection:FC<{podcasts: PodcastsQueryResult}> = ({podcasts}) => {
                         quality={100}
                         width={500}
                         height={500}
+                        placeholder="blur"
+                        blurDataURL={podcast?.thumbnail?.asset?.metadata?.lqip as string}
                       />
 
                       <div className="absolute top-4 left-4">

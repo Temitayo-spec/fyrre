@@ -69,6 +69,8 @@ const MagazineDetailsHeroSection:FC<{magazine: MagazineDetailQueryResult}> = ({m
               className="object-cover w-full"
               width={1440}
               height={1200}
+              placeholder='blur'
+              blurDataURL={magazine?.heroImage?.asset?.metadata?.lqip as string}
             />
           </div>
         </header>

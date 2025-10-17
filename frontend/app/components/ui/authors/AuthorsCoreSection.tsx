@@ -55,6 +55,8 @@ const AuthorsCoreSection:FC<{authors: AuthorsQueryResult}> = ({authors}) => {
                         quality={100}
                         width={200}
                         height={200}
+                        placeholder='blur'
+                        blurDataURL={author?.image?.asset?.metadata?.lqip as string}
                       />
                     </div>
                     <h2 className="max-w-[32.375rem] text-[2rem] font-semibold leading-[120%]">

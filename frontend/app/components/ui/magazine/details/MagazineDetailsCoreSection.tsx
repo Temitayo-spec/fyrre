@@ -22,14 +22,12 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
       href: magazine?.socialShare?.youtube,
       label: 'YouTube',
     },
-  ].filter((link) => link.href) // Only show links that exist
+  ].filter((link) => link.href)
 
   return (
     <section className="relative">
       <div className="max-w-[65rem] w-full mx-auto flex gap-16 pt-24 pb-48">
-        {/* Sidebar */}
         <aside className="flex-1 max-w-[20rem] flex flex-col">
-          {/* Author Info */}
           <div className="pb-8 border-b border-black mb-8 flex items-center gap-4">
             <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden flex-shrink-0">
               <Image
@@ -38,6 +36,8 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
                 className="w-full h-full object-cover"
                 width={80}
                 height={80}
+                placeholder="blur"
+                blurDataURL={magazine?.author?.image?.asset?.metadata?.lqip as string}
               />
             </div>
             <h3 className="text-[2rem] leading-[120%] max-w-[14.3125rem] font-semibold">
@@ -45,7 +45,6 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
             </h3>
           </div>
 
-          {/* Meta Information */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <p className="text-base leading-[180%] font-semibold">Date</p>
@@ -58,7 +57,6 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
               <p className="text-base leading-[180%]">{magazine?.duration} Min</p>
             </div>
 
-            {/* Social Share Links */}
             {socialLinks.length > 0 && (
               <div className="flex items-center justify-between">
                 <p className="text-base leading-[180%] font-semibold">Share</p>
@@ -81,7 +79,6 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
           </div>
         </aside>
 
-        {/* Main Content */}
         <article className="flex-1">
           {magazine?.content && <CustomPortableText value={magazine.content as any} />}
         </article>

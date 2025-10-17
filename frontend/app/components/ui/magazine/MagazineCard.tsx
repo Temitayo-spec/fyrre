@@ -18,12 +18,14 @@ const MagazineCard = ({magazine}: {magazine: MagazineQueryResult[0]}) => (
 
         <div className="relative">
           <Image
-            src={(magazine?.thumbnail as any)?.asset?.url}
+            src={magazine?.thumbnail?.asset?.url as string}
             alt={magazine.title}
             className="object-contain"
             quality={100}
             width={500}
             height={500}
+            placeholder='blur'
+            blurDataURL={magazine?.thumbnail?.asset?.metadata?.lqip as string}
           />
         </div>
 

@@ -123,6 +123,8 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
                 quality={100}
                 width={400}
                 height={500}
+                placeholder={(props.sidebar?.printMagazine?.coverImage as any).asset.metadata?.lqip ? 'blur' : undefined}
+                blurDataURL={(props.sidebar?.printMagazine?.coverImage as any).asset.metadata?.lqip}
               />
             </div>
             <button
@@ -229,7 +231,7 @@ const ArticleRow: FC<ArticleRowType> = ({
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <h4 className="text-sm font-semibold leading-[160%]">Text</h4>
-                <p className="text-sm leading-[160%]">{author?.name}</p>
+                <p className="text-sm leading-[160%]">{(author as any).name}</p>
               </div>
               <div className="flex items-center gap-2">
                 <h4 className="text-sm font-semibold leading-[160%]">Date</h4>
@@ -282,7 +284,7 @@ const MostPopularArticleRow: FC<MostPopularType> = ({
           <h3 className="text-2xl font-semibold leading-[120%]">{title}</h3>
           <p className="text-sm leading-[160%]">
             <span className="mr-2 font-semibold">Text</span>
-            {author.name}
+            {(author as any).name}
           </p>
         </div>
         {!isLast && (

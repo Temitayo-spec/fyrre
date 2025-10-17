@@ -107,7 +107,7 @@ const AuthorsSection: FC<{props: AuthorsSectionType}> = ({props}) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-[0.5px] border-black">
           {props?.authors?.map((authorRef) => {
-            const author = authorRef as unknown as Author;
+            const author = authorRef as unknown as Author
             return (
               <motion.div
                 key={author._id}
@@ -118,7 +118,7 @@ const AuthorsSection: FC<{props: AuthorsSectionType}> = ({props}) => {
               >
                 <AuthorCard {...author} />
               </motion.div>
-            );
+            )
           })}
         </div>
       </div>
@@ -143,6 +143,9 @@ const AuthorCard: FC<Author> = ({image, name, slug, city, job}) => {
             quality={100}
             width={400}
             height={500}
+            priority
+            placeholder='blur'
+            blurDataURL={(image?.asset as any)?.metadata?.lqip as string}
           />
         </div>
 
