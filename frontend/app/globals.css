@@ -116,3 +116,51 @@ button{
   border-color: white;
   transition: border-color 0.3s ease 0.2s;
 }
+
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100svh;
+  display: flex;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.block {
+  flex: 1;
+  height: 100%;
+  background: #222;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.logo-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100svh;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #222;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.logo-container {
+  width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+@media (max-width: 1000px) {
+  h1 {
+    font-size: 3rem;
+  }
+}

@@ -1,7 +1,6 @@
 'use client'
 import {FC, useEffect, useRef} from 'react'
 import Marquee from 'react-fast-marquee'
-import hero_banner from '@/public/images/hero_banner.jpg'
 import Image from 'next/image'
 import gsap from 'gsap'
 import {DrawSVGPlugin} from 'gsap/DrawSVGPlugin'

@@ -1,6 +1,10 @@
 'use client'
 import gsap from 'gsap'
-import {useEffect, useRef} from 'react'
+import { useEffect, useRef } from 'react'
+import {DrawSVGPlugin} from 'gsap/DrawSVGPlugin'
+import {SplitText} from 'gsap/SplitText'
+import {ScrollTrigger} from 'gsap/ScrollTrigger'
+gsap.registerPlugin(DrawSVGPlugin, SplitText, ScrollTrigger)
 
 const PosdcastHeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
@@ -17,7 +21,7 @@ const PosdcastHeroSection = () => {
       gsap.set('.hero_text path', {
         fill: 'none',
         stroke: 'black',
-        strokeWidth: 1,
+        strokeWidth: 2,
         drawSVG: '0%',
         opacity: 0,
       })
@@ -48,9 +52,12 @@ const PosdcastHeroSection = () => {
           },
           '-=0.5',
         )
-    })
+    }, [sectionRef])
 
-    return () => ctx.revert()
+    return () => {
+      ctx.revert()
+      ScrollTrigger.getAll().forEach((st) => st.kill())
+    }
   }, [])
   return (
     <section ref={sectionRef} className="overflow-hidden">

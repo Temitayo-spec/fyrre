@@ -16,6 +16,7 @@ import {resolveOpenGraphImage} from '@/sanity/lib/utils'
 import {handleError} from './client-utils'
 import {Layout} from './components'
 import {Footer as FooterType, Navbar as NavbarType} from '@/sanity.types'
+import PageTransition from './components/shared/PageTransition'
 
 /**
  * Generate metadata for the page.
@@ -97,9 +98,11 @@ export default async function RootLayout({children}: {children: React.ReactNode}
           )}
           {/* The <SanityLive> component is responsible for making all sanityFetch calls in your application live, so should always be rendered. */}
           <SanityLive onError={handleError} />
-          <Layout footer={footer} navbar={navbar}>
-            {children}
-          </Layout>
+          <PageTransition>
+            <Layout footer={footer} navbar={navbar}>
+              {children}
+            </Layout>
+          </PageTransition>
         </section>
         <SpeedInsights />
       </body>

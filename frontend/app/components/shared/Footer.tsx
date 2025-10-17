@@ -5,6 +5,13 @@ import Marquee from 'react-fast-marquee'
 import Link from 'next/link'
 import Image from 'next/image'
 import {FooterType} from '@/typings'
+import gsap from 'gsap'
+import {SplitText} from 'gsap/SplitText'
+import {ScrollTrigger} from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(SplitText, ScrollTrigger)
+}
 
 const containerVariants: Variants = {
   hidden: {},
@@ -84,63 +91,49 @@ const socialContainerVariants: Variants = {
 
 const Footer: React.FC<{footer: FooterType}> = ({footer}) => {
   const footerTextRef = useRef<HTMLHeadingElement>(null)
-  const hasAnimated = useRef(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const initGSAPAnimation = async () => {
-      if (hasAnimated.current || !footerTextRef.current) return
+    if (typeof window === 'undefined' || !footerTextRef.current || !containerRef.current) return
 
-      try {
-        const gsap = (await import('gsap')).default
-        const {SplitText} = await import('gsap/SplitText')
+    const ctx = gsap.context(() => {
+      const heroHeading = new SplitText(footerTextRef.current, {
+        type: 'lines,words,chars',
+        linesClass: 'split-line',
+        wordsClass: 'split-word',
+        charsClass: 'split-char',
+      })
 
-        gsap.registerPlugin(SplitText)
+      gsap.set(footerTextRef.current, {perspective: 400})
 
-        const heroHeading = new SplitText(footerTextRef.current, {
-          type: 'lines,words,chars',
-          linesClass: 'split-line',
-          wordsClass: 'split-word',
-          charsClass: 'split-char',
-        })
+      gsap.from(heroHeading.words, {
+        opacity: 0,
+        y: 100,
+        rotateX: -90,
+        stagger: {
+          each: 0.05,
+          from: 'start',
+        },
+        duration: 1,
+        ease: 'back.out(1.7)',
+        scrollTrigger: {
+          trigger: footerTextRef.current,
+          start: 'top 80%',
+          once: true,
+        },
+      })
+    }, containerRef)
 
-        gsap.set(footerTextRef.current, {perspective: 400})
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: footerTextRef.current,
-            start: 'top 80%',
-            once: true,
-          },
-        })
-
-        tl.from(heroHeading.words, {
-          opacity: 0,
-          y: 100,
-          rotateX: -90,
-          stagger: {
-            each: 0.05,
-            from: 'start',
-          },
-          duration: 1,
-          ease: 'back.out(1.7)',
-        })
-
-        hasAnimated.current = true
-      } catch (error) {
-        console.log('GSAP not available, using Framer Motion fallback')
-      }
-    }
-
-    initGSAPAnimation()
+    return () => ctx.revert()
   }, [])
 
   return (
-    <footer className="bg-black text-white">
+    <footer className="bg-black text-white" ref={containerRef}>
       <motion.div
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{once: true, amount: 0.2}}
+        viewport={{once: true}}
         className="flex flex-col gap-32 pb-[4.06rem]"
       >
         <motion.div className="p-5" variants={marqueeVariants}>
@@ -163,41 +156,6 @@ const Footer: React.FC<{footer: FooterType}> = ({footer}) => {
           >
             {footer.newsletter?.title}
           </h2>
-
-          <motion.h2
-            className="gsap-fallback max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2"
-            variants={{
-              hidden: {opacity: 0},
-              visible: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.05,
-                  delayChildren: 0.2,
-                },
-              },
-            }}
-            style={{display: 'none'}}
-          >
-            {'Design News to your inbox'.split(' ').map((word, index) => (
-              <motion.span
-                key={index}
-                className="inline-block mr-[0.5em] overflow-hidden"
-                variants={{
-                  hidden: {y: '100%', rotateX: -90},
-                  visible: {
-                    y: '0%',
-                    rotateX: 0,
-                    transition: {
-                      duration: 0.8,
-                      ease: [0.25, 0.46, 0.45, 0.94],
-                    },
-                  },
-                }}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </motion.h2>
 
           <motion.form
             action="#"
@@ -258,7 +216,6 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
       whileInView="visible"
       viewport={{once: true, amount: 0.3}}
     >
-      {/* Brand Section */}
       <div className="flex gap-[18.75rem] w-full">
         <motion.div className="flex-1" variants={linkVariants}>
           <h2 className="text-xl font-semibold">
@@ -275,7 +232,6 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
           className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 flex-3"
           variants={footerSectionVariants}
         >
-          {/* Navigation Links with Sequential Stagger */}
           <motion.div
             className="space-y-3 columns-1 w-full"
             variants={{
@@ -402,7 +358,6 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
         </motion.div>
       </div>
 
-      {/* Bottom Section */}
       <motion.div
         className="flex flex-col md:flex-row justify-between items-center mt-16 pt-8"
         variants={{
@@ -415,7 +370,6 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
           },
         }}
       >
-        {/* Copyright */}
         <motion.div
           className="text-white leading-[160%] text-sm mb-6 md:mb-0"
           variants={linkVariants}
@@ -423,7 +377,6 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
           {footer.copyright}
         </motion.div>
 
-        {/* Social Links */}
         <motion.div className="flex space-x-4" variants={socialContainerVariants}>
           {footer?.socialLinks?.map((social, index) => (
             <motion.a

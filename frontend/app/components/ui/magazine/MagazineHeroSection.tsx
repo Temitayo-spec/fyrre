@@ -1,6 +1,10 @@
 'use client'
 import gsap from 'gsap'
+import DrawSVGPlugin from 'gsap/DrawSVGPlugin'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { SplitText } from 'gsap/SplitText'
 import {useEffect, useRef} from 'react'
+gsap.registerPlugin(DrawSVGPlugin, SplitText, ScrollTrigger)
 
 const MagazineHeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
@@ -48,9 +52,12 @@ const MagazineHeroSection = () => {
           },
           '-=0.5',
         )
-    })
+    }, [sectionRef])
 
-    return () => ctx.revert()
+    return () => {
+      ctx.revert()
+      ScrollTrigger.getAll().forEach((st) => st.kill())
+    }
   }, [])
   return (
     <section ref={sectionRef} className="overflow-hidden">

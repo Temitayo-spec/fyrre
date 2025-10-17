@@ -8,7 +8,6 @@ import Link from 'next/link'
 import {ArticleRowType, MostPopularType} from '@/typings'
 import {formatDate} from '@/lib'
 
-// Animation variants
 const itemVariants: Variants = {
   hidden: {opacity: 0, y: 50},
   visible: {
