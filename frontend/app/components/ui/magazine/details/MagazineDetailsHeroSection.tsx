@@ -1,8 +1,12 @@
 import Image from 'next/image'
 import magazine_details_banner from '@/public/images/magazine_details_banner.png'
 import Link from 'next/link'
+import { MagazineDetailQueryResult } from '@/sanity.types'
+import { FC } from 'react'
+import { formatDate } from '@/lib'
 
-const MagazineDetailsHeroSection = () => {
+const MagazineDetailsHeroSection:FC<{magazine: MagazineDetailQueryResult}> = ({magazine}) => {
+  console.log(magazine,'magazine')
   return (
     <section>
       <div className="wrapper">
@@ -24,18 +28,18 @@ const MagazineDetailsHeroSection = () => {
               <span className="text-base font-semibold uppercase">Go Back</span>
             </Link>
 
-            <h3 className="text-[2rem] font-semibold leading-[110%] uppercase">Magazine</h3>
+            <h3 className="text-[2rem] font-semibold leading-[110%] uppercase">
+              {magazine?.label || 'Magazine'}
+            </h3>
           </div>
 
           <div className="flex gap-[6.44rem] justify-between mb-24">
-            <h1 className="flex-1 text-[6.5rem] font-semibold leading-[110%] uppercase max-w-[33rem]">
-              Hope dies last
+            <h1 className="flex-1 text-[6.5rem] font-semibold leading-[110%] uppercase max-w-[40rem]">
+              {magazine?.title}
             </h1>
 
             <p className="flex-1 text-xl font-medium leading-[180%] max-w-[44rem]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Egestas dui id ornare arcu odio ut sem.
-              Cras ornare arcu dui vivamus arcu felis bibendum ut. Porttitor leo a diam.
+              {magazine?.heroDescription}
             </p>
           </div>
 
@@ -43,26 +47,28 @@ const MagazineDetailsHeroSection = () => {
             <div className="flex gap-4">
               <p className="flex gap-2 text-sm leading-[160%]">
                 <span className="font-semibold">Text</span>
-                Jakob Gronberg
+                {magazine?.author?.name}
               </p>
               <p className="flex gap-2 text-sm leading-[160%]">
                 <span className="font-semibold">Date</span>
-                16. March 2022
+               {formatDate(magazine?.publishedAt as string)}
               </p>
               <p className="flex gap-2 text-sm leading-[160%]">
-                <span className="font-semibold">Duration</span>1 min
+                <span className="font-semibold">Duration</span>{magazine?.duration} Min
               </p>
             </div>
 
-            <div className="border border-black py-2 px-3 rounded-2xl text-xs uppercase">Label</div>
+            <div className="border border-black py-2 px-3 rounded-2xl text-xs uppercase">{magazine?.category}</div>
           </div>
 
           <div className="max-h-[55rem] w-full">
             <Image
-              src={magazine_details_banner}
-              alt="banner"
+              src={magazine?.heroImage?.asset?.url || magazine_details_banner}
+              alt={magazine?.title || 'Magazine'}
               quality={100}
               className="object-cover w-full"
+              width={1440}
+              height={1200}
             />
           </div>
         </header>

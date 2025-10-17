@@ -4,7 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {ArrorwRight} from '../../shared/Icons'
 import {AnimatePresence, motion, Variants} from 'framer-motion'
-import {podcasts} from '@/constants/podcasts'
+import { FC } from 'react'
+import { PodcastsQueryResult } from '@/sanity.types'
 
 const itemVariants: Variants = {
   hidden: {opacity: 0, y: 50},
@@ -29,7 +30,7 @@ const lineVariants: Variants = {
   },
 }
 
-const PodcastCoreSection = () => {
+const PodcastCoreSection:FC<{podcasts: PodcastsQueryResult}> = ({podcasts}) => {
   return (
     <section>
       <div className="wrapper">
@@ -46,27 +47,31 @@ const PodcastCoreSection = () => {
               >
                 <div className="flex items-center justify-between relative py-12">
                   <div className="flex items-center gap-16">
-                    <h4 className="text-2xl font-semibold leading-[120%]">{podcast.episode_num}</h4>
+                    <h4 className="text-2xl font-semibold leading-[120%]">
+                      {podcast.episodeNumber}
+                    </h4>
                     <div className="relative max-w-[15rem] flex-1">
                       <Image
-                        src={podcast.thumbnail}
+                        src={podcast?.thumbnail?.asset?.url as string}
                         alt="podcast"
                         className="object-cover h-[15rem] group-hover:brightness-110 transition-all duration-300"
                         quality={100}
+                        width={500}
+                        height={500}
                       />
 
                       <div className="absolute top-4 left-4">
                         <h3 className="text-[1.875rem] uppercase font-semibold text-white">
-                          Fyrre
+                          {podcast.podcastBranding?.name}
                         </h3>
                         <p className="text-[0.9375rem] uppercase font-semibold text-white -translate-y-3 inline-flex">
-                          Podcast
+                          {podcast.podcastBranding?.subtitle}
                         </p>
                       </div>
 
                       <div className="absolute bottom-[1.47rem] px-4 flex items-end justify-between w-full">
                         <h4 className="text-[0.9375rem] font-semibold text-white uppercase">
-                          EP{podcast.episode_num}
+                          EP{podcast.episodeNumber}
                         </h4>
                         <Image src={arrow} alt="arrow" className="w-[1.86975rem]" />
                       </div>
@@ -86,7 +91,10 @@ const PodcastCoreSection = () => {
                       {podcast.duration}
                     </p>
 
-                    <Link href={podcast.slug} className="inline-flex items-center gap-2">
+                    <Link
+                      href={`/podcast/${podcast.slug}`}
+                      className="inline-flex items-center gap-2"
+                    >
                       <span className="text-base uppercase font-semibold">Listen</span>
                       <ArrorwRight />
                     </Link>

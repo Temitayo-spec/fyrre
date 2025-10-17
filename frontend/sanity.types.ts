@@ -16,7 +16,7 @@
 export type AuthorsSection = {
   _type: 'authorsSection'
   sectionTitle?: string
-  displayType?: 'featured' | 'all' | 'selected'
+  displayType?: 'selected'
   authors?: Array<{
     _ref: string
     _type: 'reference'
@@ -403,6 +403,10 @@ export type Podcast = {
     spotify?: string
     apple?: string
     soundcloud?: string
+  }
+  podcastBranding?: {
+    name?: string
+    subtitle?: string
   }
   socialShare?: {
     instagram?: string
@@ -1066,6 +1070,141 @@ export declare const internalGroqTypeReferenceTo: unique symbol
 export type AuthorSlugsQueryResult = Array<{
   slug: string
 }>
+// Variable: authorsQuery
+// Query: *[_type == 'author'] | order(name asc) {    _id,    _type,    name,    "slug": slug.current,    image {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    job,    city,    bio,    featured  }
+export type AuthorsQueryResult = Array<{
+  _id: string
+  _type: 'author'
+  name: string
+  slug: string
+  image: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  job: string
+  city: string
+  bio: string
+  featured: boolean | null
+}>
+// Variable: authorWithArticlesQuery
+// Query: *[_type == 'author' && slug.current == $slug][0] {    _id,    _type,    name,    "slug": slug.current,    image {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    job,    city,    bio,    fullBio,    intro,    socialLinks {      instagram,      twitter,      youtube    },    featured,    "articles": *[_type == 'magazine' && author._ref == ^._id] | order(publishedAt desc) {      _id,      _type,      title,      "slug": slug.current,      thumbnail {        asset->{          _id,          url,          metadata {            lqip,            dimensions {              width,              height,              aspectRatio            }          }        },        alt,        hotspot,        crop      },      publishedAt,      duration    },    "articleCount": count(*[_type == 'magazine' && author._ref == ^._id]),    seo {      metaTitle,      metaDescription    }  }
+export type AuthorWithArticlesQueryResult = {
+  _id: string
+  _type: 'author'
+  name: string
+  slug: string
+  image: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  job: string
+  city: string
+  bio: string
+  fullBio: string
+  intro: string | null
+  socialLinks: {
+    instagram: string | null
+    twitter: string | null
+    youtube: string | null
+  } | null
+  featured: boolean | null
+  articles: Array<{
+    _id: string
+    _type: 'magazine'
+    title: string
+    slug: string
+    thumbnail: {
+      asset: {
+        _id: string
+        url: string | null
+        metadata: {
+          lqip: string | null
+          dimensions: {
+            width: number
+            height: number
+            aspectRatio: number
+          } | null
+        } | null
+      } | null
+      alt: string
+      hotspot: SanityImageHotspot | null
+      crop: SanityImageCrop | null
+    }
+    publishedAt: string
+    duration: number
+  }>
+  articleCount: number
+  seo: {
+    metaTitle: string | null
+    metaDescription: string | null
+  } | null
+} | null
+// Variable: authorDetailQuery
+// Query: *[_type == 'author' && slug.current == $slug][0] {    _id,    _type,    name,    "slug": slug.current,    image {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    job,    city,    bio,    fullBio,    intro,    socialLinks {      instagram,      twitter,      youtube    },    featured,    seo {      metaTitle,      metaDescription    }  }
+export type AuthorDetailQueryResult = {
+  _id: string
+  _type: 'author'
+  name: string
+  slug: string
+  image: {
+    asset: {
+      _id: string
+      url: string | null
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+          aspectRatio: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+  job: string
+  city: string
+  bio: string
+  fullBio: string
+  intro: string | null
+  socialLinks: {
+    instagram: string | null
+    twitter: string | null
+    youtube: string | null
+  } | null
+  featured: boolean | null
+  seo: {
+    metaTitle: string | null
+    metaDescription: string | null
+  } | null
+} | null
 // Variable: settingsQuery
 // Query: *[_type == "settings"][0]{  _id,  title,  description,  ogImage,  footer {    newsletter {      active,      title,      description,      inputPlaceholder,      buttonText,    },    marquee,    logo {      asset->{        url      },      alt    },    tagline,    description,    navLinks[] {      text,      url    },    copyright,    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },  },  navbar {    logo {      asset->{        url      },      alt    },    navLinks[] {      text,      url    },    socialLinks[] {      platform,      url,      icon {        asset->{          url        },        alt      }    },    button {      text,      link {        _type,        _key,        linkType,        page,        url,        href,        openInNewTab      },      type    }  }}
 export type SettingsQueryResult = {
@@ -1328,7 +1467,7 @@ export type GetPageQueryResult = {
         _key: string
         _type: 'authorsSection'
         sectionTitle: string | null
-        displayType?: 'all' | 'featured' | 'selected'
+        displayType?: 'selected'
         authors: Array<{
           _id: string
           _type: 'author'
@@ -1515,7 +1654,7 @@ export type MagazineQueryResult = Array<{
   featured: boolean | null
 }>
 // Variable: magazineDetailQuery
-// Query: *[_type == 'magazine' && slug.current == $slug][0] {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    heroImage {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    heroDescription,    publishedAt,    author {      name,      image {        asset->{          _id,          url,          metadata {            lqip,            dimensions {              width,              height,              aspectRatio            }          }        },        alt,        hotspot,        crop      },      bio    },    duration,    label,    content[] {      ...,      markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }     },    },    // quote {    //   text,    //   attribution    // },    socialShare {      instagram,      twitter,      youtube    },    featured,    seo {      metaTitle,      metaDescription,      ogImage {        asset->{          _id,          url        }      }    }  }
+// Query: *[_type == 'magazine' && slug.current == $slug][0] {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    heroImage {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    heroDescription,    publishedAt,    author-> {      name,      image {        asset->{          _id,          url,          metadata {            lqip,            dimensions {              width,              height,              aspectRatio            }          }        },        alt,        hotspot,        crop      },      bio    },    duration,    label,    content[] {      ...,      markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }     },    },    // quote {    //   text,    //   attribution    // },    socialShare {      instagram,      twitter,      youtube    },    featured,    seo {      metaTitle,      metaDescription,      ogImage {        asset->{          _id,          url        }      }    }  }
 export type MagazineDetailQueryResult = {
   _id: string
   _type: 'magazine'
@@ -1560,9 +1699,25 @@ export type MagazineDetailQueryResult = {
   heroDescription: string
   publishedAt: string
   author: {
-    name: null
-    image: null
-    bio: null
+    name: string
+    image: {
+      asset: {
+        _id: string
+        url: string | null
+        metadata: {
+          lqip: string | null
+          dimensions: {
+            width: number
+            height: number
+            aspectRatio: number
+          } | null
+        } | null
+      } | null
+      alt: string
+      hotspot: SanityImageHotspot | null
+      crop: SanityImageCrop | null
+    }
+    bio: string
   }
   duration: number
   label: string | null
@@ -1663,7 +1818,7 @@ export type FeaturedMagazinesQueryResult = Array<{
   featured: boolean | null
 }>
 // Variable: latestMagazinesQuery
-// Query: *[_type == 'magazine' && slug.current != $slug] | order(publishedAt desc) [0..2] {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    "author": author.name,    duration,    label  }
+// Query: *[_type == 'magazine' && slug.current != $slug] | order(publishedAt desc) [0..2] {    _id,    _type,    title,    "slug": slug.current,    excerpt,    category,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    "author": author->{      name    },    duration,    label  }
 export type LatestMagazinesQueryResult = Array<{
   _id: string
   _type: 'magazine'
@@ -1689,7 +1844,9 @@ export type LatestMagazinesQueryResult = Array<{
     crop: SanityImageCrop | null
   }
   publishedAt: string
-  author: null
+  author: {
+    name: string
+  }
   duration: number
   label: string | null
 }>
@@ -1890,7 +2047,7 @@ export type PagesSlugsResult = Array<{
   slug: string
 }>
 // Variable: podcastsQuery
-// Query: *[_type == 'podcast'] | order(episodeNumber desc) {    _id,    _type,    title,    "slug": slug.current,    episodeNumber,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    duration,    featured  }
+// Query: *[_type == 'podcast'] | order(episodeNumber desc) {    _id,    _type,    title,    "slug": slug.current,    episodeNumber,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    podcastBranding {      name,      subtitle    },    publishedAt,    duration,    featured  }
 export type PodcastsQueryResult = Array<{
   _id: string
   _type: 'podcast'
@@ -1914,12 +2071,16 @@ export type PodcastsQueryResult = Array<{
     hotspot: SanityImageHotspot | null
     crop: SanityImageCrop | null
   }
+  podcastBranding: {
+    name: string | null
+    subtitle: string | null
+  } | null
   publishedAt: string
   duration: string
   featured: boolean | null
 }>
 // Variable: podcastDetailQuery
-// Query: *[_type == 'podcast' && slug.current == $slug][0] {    _id,    _type,    title,    "slug": slug.current,    episodeNumber,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    duration,    excerpt,    content,    podcastLinks {      spotify,      apple,      soundcloud    },    socialShare {      instagram,      twitter,      youtube    },    featured,    seo {      metaTitle,      metaDescription,      ogImage {        asset->{          _id,          url        }      }    }  }
+// Query: *[_type == 'podcast' && slug.current == $slug][0] {    _id,    _type,    title,    "slug": slug.current,    episodeNumber,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    duration,    excerpt,    content,    podcastLinks {      spotify,      apple,      soundcloud    },    podcastBranding {      name,      subtitle    },    socialShare {      instagram,      twitter,      youtube    },    featured,    seo {      metaTitle,      metaDescription,      ogImage {        asset->{          _id,          url        }      }    }  }
 export type PodcastDetailQueryResult = {
   _id: string
   _type: 'podcast'
@@ -1952,6 +2113,10 @@ export type PodcastDetailQueryResult = {
     apple: string | null
     soundcloud: string | null
   } | null
+  podcastBranding: {
+    name: string | null
+    subtitle: string | null
+  } | null
   socialShare: {
     instagram: string | null
     twitter: string | null
@@ -1970,7 +2135,7 @@ export type PodcastDetailQueryResult = {
   } | null
 } | null
 // Variable: latestPodcastsQuery
-// Query: *[_type == 'podcast' && slug.current != $slug] | order(episodeNumber desc) [0..2] {    _id,    _type,    title,    "slug": slug.current,    episodeNumber,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    publishedAt,    duration  }
+// Query: *[_type == 'podcast' && slug.current != $slug] | order(episodeNumber desc) [0..2] {    _id,    _type,    title,    "slug": slug.current,    episodeNumber,    thumbnail {      asset->{        _id,        url,        metadata {          lqip,          dimensions {            width,            height,            aspectRatio          }        }      },      alt,      hotspot,      crop    },    podcastBranding {      name,      subtitle    },    publishedAt,    duration  }
 export type LatestPodcastsQueryResult = Array<{
   _id: string
   _type: 'podcast'
@@ -1994,6 +2159,10 @@ export type LatestPodcastsQueryResult = Array<{
     hotspot: SanityImageHotspot | null
     crop: SanityImageCrop | null
   }
+  podcastBranding: {
+    name: string | null
+    subtitle: string | null
+  } | null
   publishedAt: string
   duration: string
 }>
@@ -2037,12 +2206,15 @@ import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
     '\n  *[_type == \'author\'] {\n    "slug": slug.current\n  }\n': AuthorSlugsQueryResult
+    '\n  *[_type == \'author\'] | order(name asc) {\n    _id,\n    _type,\n    name,\n    "slug": slug.current,\n    image {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    job,\n    city,\n    bio,\n    featured\n  }\n': AuthorsQueryResult
+    '\n  *[_type == \'author\' && slug.current == $slug][0] {\n    _id,\n    _type,\n    name,\n    "slug": slug.current,\n    image {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    job,\n    city,\n    bio,\n    fullBio,\n    intro,\n    socialLinks {\n      instagram,\n      twitter,\n      youtube\n    },\n    featured,\n    "articles": *[_type == \'magazine\' && author._ref == ^._id] | order(publishedAt desc) {\n      _id,\n      _type,\n      title,\n      "slug": slug.current,\n      thumbnail {\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height,\n              aspectRatio\n            }\n          }\n        },\n        alt,\n        hotspot,\n        crop\n      },\n      publishedAt,\n      duration\n    },\n    "articleCount": count(*[_type == \'magazine\' && author._ref == ^._id]),\n    seo {\n      metaTitle,\n      metaDescription\n    }\n  }\n': AuthorWithArticlesQueryResult
+    '\n  *[_type == \'author\' && slug.current == $slug][0] {\n    _id,\n    _type,\n    name,\n    "slug": slug.current,\n    image {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    job,\n    city,\n    bio,\n    fullBio,\n    intro,\n    socialLinks {\n      instagram,\n      twitter,\n      youtube\n    },\n    featured,\n    seo {\n      metaTitle,\n      metaDescription\n    }\n  }\n': AuthorDetailQueryResult
     '*[_type == "settings"][0]{\n  _id,\n  title,\n  description,\n  ogImage,\n  footer {\n    newsletter {\n      active,\n      title,\n      description,\n      inputPlaceholder,\n      buttonText,\n    },\n    marquee,\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    tagline,\n    description,\n    navLinks[] {\n      text,\n      url\n    },\n    copyright,\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n  },\n  navbar {\n    logo {\n      asset->{\n        url\n      },\n      alt\n    },\n    navLinks[] {\n      text,\n      url\n    },\n    socialLinks[] {\n      platform,\n      url,\n      icon {\n        asset->{\n          url\n        },\n        alt\n      }\n    },\n    button {\n      text,\n      link {\n        _type,\n        _key,\n        linkType,\n        page,\n        url,\n        href,\n        openInNewTab\n      },\n      type\n    }\n  }\n}': SettingsQueryResult
     '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n        _type == "heroSection" => {\n        _key,\n        _type,\n        heroText {\n          enabled,\n          strokeColor {\n            hex\n          },\n          fillColor {\n            hex\n          }\n        },\n        newsTicker {\n          enabled,\n          label,\n          backgroundColor,\n          textColor,\n          items[] {\n            text\n          },\n          speed\n        },\n        heroHeading,\n        description,\n        metadata {\n          author {\n            label,\n            name\n          },\n          date {\n            label,\n            value\n          },\n          duration {\n            label,\n            value\n          }\n        },\n        label {\n          text,\n          borderColor,\n          textColor\n        },\n        heroImage {\n          asset->{\n            _id,\n            url,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height,\n                aspectRatio\n              }\n            }\n          },\n          alt,\n          hotspot,\n          crop\n        },\n        animations {\n          enabled,\n          parallaxStrength\n        },\n        styling {\n          headingColor,\n          descriptionColor,\n          backgroundColor\n        }\n      },\n      _type == "articlesSection" => {\n        _key,\n        _type,\n        sectionTitle,\n        articles[]->{\n          ...,\n          _id,\n          _type,\n          title,\n          "slug": slug.current,\n          excerpt,\n          category,\n          thumbnail {\n            asset->{\n              _id,\n              url,\n              metadata {\n                lqip,\n                dimensions {\n                  width,\n                  height,\n                  aspectRatio\n                }\n              }\n            },\n            alt,\n            hotspot,\n            crop\n          },\n          publishedAt,\n          "author": author->{\n            name\n          },\n          duration\n        },\n        showAllArticlesLink,\n        allArticlesLinkText,\n        allArticlesLinkUrl,\n        sidebar {\n          printMagazine {\n            enabled,\n            label,\n            issue,\n            coverImage {\n              asset->{\n                _id,\n                url,\n                metadata {\n                  lqip,\n                  dimensions {\n                    width,\n                    height,\n                    aspectRatio\n                  }\n                }\n              },\n              alt,\n              hotspot,\n              crop\n            },\n            buttonText,\n            buttonLink\n          },\n          mostPopular {\n            enabled,\n            title,\n            articles[]->{\n              _id,\n              _type,\n              title,\n              "slug": slug.current,\n              "author": author->{\n                name\n              }\n            }\n          },\n          newsletter {\n            enabled,\n            label,\n            heading,\n            placeholder,\n            buttonText,\n            backgroundColor\n          }\n        },\n        animations {\n          enabled,\n          animationDuration\n        },\n        layout {\n          mainColumnWidth,\n          showSidebar\n        }\n      },\n      \n  _type == "podcastSection" => {\n    _key,\n    _type,\n    sectionTitle,\n    episodes[]->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current,\n      episodeNumber,\n      thumbnail {\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height,\n              aspectRatio\n            }\n          }\n        },\n        alt,\n        hotspot,\n        crop\n      },\n      publishedAt,\n      duration\n    },\n    showAllEpisodesLink,\n    allEpisodesLinkText,\n    allEpisodesLinkUrl,\n    podcastBranding {\n      name,\n      subtitle\n    },\n    animations {\n      enabled\n    }\n  }\n,\n      \n  _type == "authorsSection" => {\n    _key,\n    _type,\n    sectionTitle,\n    authors[]->{\n      _id,\n      _type,\n      name,\n      "slug": slug.current,\n      image {\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height,\n              aspectRatio\n            }\n          }\n        },\n        alt,\n        hotspot,\n        crop\n      },\n      job,\n      city,\n      bio,\n      socialLinks {\n        instagram,\n        twitter,\n        youtube\n      },\n      featured,\n      "articleCount": count(*[_type == \'magazine\' && author._ref == ^._id])\n    },\n    limit,\n    showAllAuthorsLink,\n    allAuthorsLinkText,\n    allAuthorsLinkUrl\n  }\n,\n    },\n  }\n': GetPageQueryResult
     '\n  *[_type == \'magazine\'] | order(publishedAt desc) {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    "author": author->{\n      name\n    },\n    duration,\n    label,\n    featured\n  }\n': MagazineQueryResult
-    '\n  *[_type == \'magazine\' && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    heroImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    heroDescription,\n    publishedAt,\n    author {\n      name,\n      image {\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height,\n              aspectRatio\n            }\n          }\n        },\n        alt,\n        hotspot,\n        crop\n      },\n      bio\n    },\n    duration,\n    label,\n    content[] {\n      ...,\n      markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n     },\n    },\n    // quote {\n    //   text,\n    //   attribution\n    // },\n    socialShare {\n      instagram,\n      twitter,\n      youtube\n    },\n    featured,\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': MagazineDetailQueryResult
+    '\n  *[_type == \'magazine\' && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    heroImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    heroDescription,\n    publishedAt,\n    author-> {\n      name,\n      image {\n        asset->{\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height,\n              aspectRatio\n            }\n          }\n        },\n        alt,\n        hotspot,\n        crop\n      },\n      bio\n    },\n    duration,\n    label,\n    content[] {\n      ...,\n      markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n     },\n    },\n    // quote {\n    //   text,\n    //   attribution\n    // },\n    socialShare {\n      instagram,\n      twitter,\n      youtube\n    },\n    featured,\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': MagazineDetailQueryResult
     '\n  *[_type == \'magazine\' && featured == true] | order(publishedAt desc) [0..5] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    "author": author.name,\n    duration,\n    label,\n    featured\n  }\n': FeaturedMagazinesQueryResult
-    '\n  *[_type == \'magazine\' && slug.current != $slug] | order(publishedAt desc) [0..2] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    "author": author.name,\n    duration,\n    label\n  }\n': LatestMagazinesQueryResult
+    '\n  *[_type == \'magazine\' && slug.current != $slug] | order(publishedAt desc) [0..2] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    category,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    "author": author->{\n      name\n    },\n    duration,\n    label\n  }\n': LatestMagazinesQueryResult
     '\n  *[_type == \'magazine\'] {\n    "slug": slug.current\n  }\n': MagazineSlugsQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
@@ -2050,9 +2222,9 @@ declare module '@sanity/client' {
     '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
-    '\n  *[_type == \'podcast\'] | order(episodeNumber desc) {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    episodeNumber,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    duration,\n    featured\n  }\n': PodcastsQueryResult
-    '\n  *[_type == \'podcast\' && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    episodeNumber,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    duration,\n    excerpt,\n    content,\n    podcastLinks {\n      spotify,\n      apple,\n      soundcloud\n    },\n    socialShare {\n      instagram,\n      twitter,\n      youtube\n    },\n    featured,\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': PodcastDetailQueryResult
-    '\n  *[_type == \'podcast\' && slug.current != $slug] | order(episodeNumber desc) [0..2] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    episodeNumber,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    duration\n  }\n': LatestPodcastsQueryResult
+    '\n  *[_type == \'podcast\'] | order(episodeNumber desc) {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    episodeNumber,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    podcastBranding {\n      name,\n      subtitle\n    },\n    publishedAt,\n    duration,\n    featured\n  }\n': PodcastsQueryResult
+    '\n  *[_type == \'podcast\' && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    episodeNumber,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    duration,\n    excerpt,\n    content,\n    podcastLinks {\n      spotify,\n      apple,\n      soundcloud\n    },\n    podcastBranding {\n      name,\n      subtitle\n    },\n    socialShare {\n      instagram,\n      twitter,\n      youtube\n    },\n    featured,\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': PodcastDetailQueryResult
+    '\n  *[_type == \'podcast\' && slug.current != $slug] | order(episodeNumber desc) [0..2] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    episodeNumber,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    podcastBranding {\n      name,\n      subtitle\n    },\n    publishedAt,\n    duration\n  }\n': LatestPodcastsQueryResult
     '\n  *[_type == \'podcast\' && featured == true] | order(episodeNumber desc) [0..5] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    episodeNumber,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height,\n            aspectRatio\n          }\n        }\n      },\n      alt,\n      hotspot,\n      crop\n    },\n    publishedAt,\n    duration,\n    featured\n  }\n': FeaturedPodcastsQueryResult
     '\n  *[_type == \'podcast\'] {\n    "slug": slug.current\n  }\n': PodcastSlugsQueryResult
   }

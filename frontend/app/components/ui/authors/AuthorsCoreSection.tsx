@@ -4,7 +4,8 @@ import {AnimatePresence, motion, Variants} from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import {ArrorwRight} from '../../shared/Icons'
-import { authors } from '@/constants/authors'
+import { FC } from 'react'
+import { AuthorsQueryResult } from '@/sanity.types'
 
 const itemVariants: Variants = {
   hidden: {opacity: 0, y: 50},
@@ -29,7 +30,7 @@ const lineVariants: Variants = {
   },
 }
 
-const AuthorsCoreSection = () => {
+const AuthorsCoreSection:FC<{authors: AuthorsQueryResult}> = ({authors}) => {
   return (
     <section>
       <div className="wrapper">
@@ -48,10 +49,12 @@ const AuthorsCoreSection = () => {
                   <div className="flex items-center gap-12">
                     <div className="">
                       <Image
-                        src={author.image}
+                        src={author?.image?.asset?.url as string}
                         alt="author photo"
                         className="object-cover h-[9.375rem] w-[9.375rem] group-hover:brightness-110 transition-all duration-300 rounded-full"
                         quality={100}
+                        width={200}
+                        height={200}
                       />
                     </div>
                     <h2 className="max-w-[32.375rem] text-[2rem] font-semibold leading-[120%]">
@@ -69,7 +72,7 @@ const AuthorsCoreSection = () => {
                       {author.city}
                     </p>
 
-                    <Link href={'/authors/1'} className="inline-flex items-center gap-2">
+                    <Link href={`/authors/${author.slug}`} className="inline-flex items-center gap-2">
                       <span className="text-base uppercase font-semibold">About</span>
                       <ArrorwRight />
                     </Link>

@@ -8,7 +8,6 @@ import { Magazine, MagazineQueryResult } from '@/sanity.types'
 const ITEMS_PER_PAGE = 6
 
 const MagazineCoreSection:FC<{magazines: MagazineQueryResult}> = ({magazines}) => {
-  console.log(magazines, "magazines")
   const [activeCategory, setActiveCategory] = useState('All')
   const [currentPage, setCurrentPage] = useState(1)
 

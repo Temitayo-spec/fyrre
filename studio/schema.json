@@ -26,14 +26,6 @@
             "of": [
               {
                 "type": "string",
-                "value": "featured"
-              },
-              {
-                "type": "string",
-                "value": "all"
-              },
-              {
-                "type": "string",
                 "value": "selected"
               }
             ]
@@ -2476,6 +2468,29 @@
               "optional": true
             },
             "soundcloud": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
+      "podcastBranding": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "name": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "subtitle": {
               "type": "objectAttribute",
               "value": {
                 "type": "string"

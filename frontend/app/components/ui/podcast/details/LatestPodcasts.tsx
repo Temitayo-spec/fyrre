@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import {PodcastCard} from '../../home/PodcastSection'
+import { LatestPodcastsQueryResult, Podcast } from '@/sanity.types';
 
-const LatestPodcasts = ({slug, podcasts}: {slug: string; podcasts: Podcast[]}) => {
+const LatestPodcasts = ({slug, podcasts}: {slug: string; podcasts: LatestPodcastsQueryResult}) => {
   const filteredPodcasts = podcasts.filter(
-    (podcast) => podcast.title.toLowerCase() !== slug.toLowerCase(),
+    (podcast) => podcast?.slug.toLowerCase() !== slug.toLowerCase(),
   )
   return (
     <section aria-label="Latest magazine posts" className="mb-48">
@@ -33,11 +34,17 @@ const LatestPodcasts = ({slug, podcasts}: {slug: string; podcasts: Podcast[]}) =
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 relative border-[0.5px] border-black">
           {filteredPodcasts.length > 0 ? (
-            filteredPodcasts
-              .slice(0, 3)
-              .map((podcast, index) => (
-                <PodcastCard key={`${podcast.title}-${index}`} {...podcast} />
-              ))
+            filteredPodcasts.slice(0, 3).map((podcast, index) => (
+              <PodcastCard
+                key={`${podcast?.title}-${index}`}
+                {...(podcast as unknown as Podcast & {
+                  podcastBranding?: {
+                    name?: string
+                    subtitle?: string
+                  }
+                })}
+              />
+            ))
           ) : (
             <div className="col-span-full p-12 text-center">
               <p className="text-lg">No magazines found in this category.</p>

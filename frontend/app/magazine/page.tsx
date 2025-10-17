@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
     sanityFetch({query: settingsQuery, stega: false}),
   ])
 
-  const pageTitle = page?.name || 'Home'
+  const pageTitle = page?.name || 'Magazine'
   const siteTitle = settings?.title || demo.title
 
   return {

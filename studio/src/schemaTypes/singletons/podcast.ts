@@ -99,6 +99,29 @@ export const podcast = defineType({
       ],
     }),
     defineField({
+      name: 'podcastBranding',
+      title: 'Podcast Branding',
+      type: 'object',
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
+      fields: [
+        {
+          name: 'name',
+          title: 'Podcast Name',
+          type: 'string',
+          initialValue: 'Fyrre',
+        },
+        {
+          name: 'subtitle',
+          title: 'Subtitle',
+          type: 'string',
+          initialValue: 'Podcast',
+        },
+      ],
+    }),
+    defineField({
       name: 'socialShare',
       title: 'Social Share Links',
       type: 'object',

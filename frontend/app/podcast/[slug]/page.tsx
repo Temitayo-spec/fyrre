@@ -1,8 +1,78 @@
 import {LatestPodcasts, PodcastDetailsSection} from '@/app/components'
-import {podcasts} from '@/constants/podcasts'
 import Link from 'next/link'
+import {sanityFetch} from '@/sanity/lib/live'
+import {podcastSlugsQuery, latestPodcastsQuery, podcastDetailQuery} from '@/sanity/lib/queries'
+import {notFound} from 'next/navigation'
+import type {Metadata} from 'next'
+import { LatestPodcastsQueryResult, PodcastDetailQueryResult } from '@/sanity.types'
 
-const PodcastDetails = () => {
+interface PageProps {
+  params: Promise<{
+    slug: string
+  }>
+}
+
+export async function generateStaticParams() {
+  const {data} = await sanityFetch({
+    query: podcastSlugsQuery,
+    perspective: 'published',
+    stega: false,
+  })
+  return data
+}
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params
+  const {data: podcast} = await sanityFetch({
+    query: podcastDetailQuery,
+    params,
+    stega: false,
+  })
+
+  if (!podcast) {
+    return {
+      title: 'Podcast Not Found',
+    }
+  }
+
+  return {
+    title: podcast.seo?.metaTitle || podcast.title,
+    description: podcast.seo?.metaDescription || podcast.excerpt,
+    openGraph: {
+      title: podcast.seo?.metaTitle || podcast.title,
+      description: podcast.seo?.metaDescription || podcast.excerpt,
+      images: podcast.seo?.ogImage?.asset?.url
+        ? [podcast.seo.ogImage.asset.url]
+        : podcast.thumbnail?.asset?.url
+          ? [podcast.thumbnail.asset.url]
+          : [],
+      type: 'article',
+      publishedTime: podcast.publishedAt,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: podcast.seo?.metaTitle || podcast.title,
+      description: podcast.seo?.metaDescription || podcast.excerpt,
+      images: podcast.seo?.ogImage?.asset?.url
+        ? [podcast.seo.ogImage.asset.url]
+        : podcast.thumbnail?.asset?.url
+          ? [podcast.thumbnail.asset.url]
+          : [],
+    },
+  } satisfies Metadata
+}
+
+
+export default async function PodcastDetailPage(props: PageProps) {
+  const params = await props.params
+
+  const [{data: podcast}, {data: latestPodcasts}] = await Promise.all([
+    sanityFetch({query: podcastDetailQuery, params}),
+    sanityFetch({query: latestPodcastsQuery, params}),
+  ])
+
+  if (!podcast?._id) notFound()
+
   return (
     <main>
       <div className="flex items-center justify-between pt-8 mb-24 wrapper">
@@ -25,10 +95,9 @@ const PodcastDetails = () => {
         <h3 className="text-[2rem] font-semibold leading-[110%] uppercase">Podcast</h3>
       </div>
 
-      <PodcastDetailsSection />
-      <LatestPodcasts podcasts={podcasts} slug={podcasts[0].slug} />
+      <PodcastDetailsSection podcast={podcast as PodcastDetailQueryResult} />
+      <LatestPodcasts podcasts={latestPodcasts as LatestPodcastsQueryResult || []} slug={params.slug} />
     </main>
   )
 }
 
-export default PodcastDetails

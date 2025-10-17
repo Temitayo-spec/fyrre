@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import MagazineCard from '../MagazineCard'
-import { Magazine } from '@/typings';
+import { LatestMagazinesQueryResult, MagazineQueryResult } from '@/sanity.types';
 
-const LatestPosts = ({slug, magazines}: {slug: string; magazines: Magazine[]}) => {
+const LatestPosts = ({slug, magazines}: {slug: string; magazines: LatestMagazinesQueryResult}) => {
   const filteredMagazines = magazines.filter(
     (magazine) => magazine.title.toLowerCase() !== slug.toLowerCase(),
   )
@@ -35,7 +35,7 @@ const LatestPosts = ({slug, magazines}: {slug: string; magazines: Magazine[]}) =
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 relative border-[0.5px] border-black">
           {filteredMagazines.length > 0 ? (
             filteredMagazines.slice(0, 3).map((magazine, index) => (
-              <MagazineCard key={`${magazine.title}-${index}`} magazine={magazine} />
+              <MagazineCard key={`${magazine.title}-${index}`} magazine={magazine as MagazineQueryResult[0]} />
             ))
           ) : (
             <div className="col-span-full p-12 text-center">

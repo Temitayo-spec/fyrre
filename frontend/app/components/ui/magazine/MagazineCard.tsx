@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const MagazineCard = ({magazine}: {magazine: MagazineQueryResult[0]}) => (
-  <Link href={`/magazine/${magazine.title.toLowerCase()}`} className="group">
+  <Link href={`/magazine/${magazine.slug}`} className="group">
     <article className="magazine-card p-[2.5rem] border-[0.5px] border-black gap-y-8 min-h-[54rem] flex flex-col hover:bg-gray-50 transition-colors">
       <div className="magazine-card-content flex flex-col gap-y-8 h-full flex-1">
         <div className="flex items-center justify-between">
@@ -32,17 +32,17 @@ const MagazineCard = ({magazine}: {magazine: MagazineQueryResult[0]}) => (
             <h3 className="text-[2rem] font-semibold leading-[120%] group-hover:underline">
               {magazine.title}
             </h3>
-            <p className="text-base leading-[180%] line-clamp-3">{magazine.excerpt}</p>
+            <p className="text-base leading-[180%] line-clamp-3">{magazine?.excerpt}</p>
           </div>
 
           <div className="flex gap-4 text-sm leading-[160%]">
             <p className="flex gap-2">
               <span className="font-semibold">Text</span>
-              <span>{magazine.author.name}</span>
+              <span>{magazine?.author?.name}</span>
             </p>
             <p className="flex gap-2">
               <span className="font-semibold">Duration</span>
-              <span>{magazine.duration} min</span>
+              <span>{magazine?.duration} min</span>
             </p>
           </div>
         </div>

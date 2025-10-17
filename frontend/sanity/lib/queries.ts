@@ -98,115 +98,145 @@ export const authorSlugsQuery = defineQuery(`
   }
 `)
 
-// // Query for author with their articles (combined)
-// export const authorWithArticlesQuery = defineQuery(`
-//   *[_type == 'author' && slug.current == $slug][0] {
-//     _id,
-//     _type,
-//     name,
-//     "slug": slug.current,
-//     image {
-//       asset->{
-//         _id,
-//         url,
-//         metadata {
-//           lqip,
-//           dimensions {
-//             width,
-//             height,
-//             aspectRatio
-//           }
-//         }
-//       },
-//       alt,
-//       hotspot,
-//       crop
-//     },
-//     job,
-//     city,
-//     bio,
-//     fullBio,
-//     intro,
-//     socialLinks {
-//       instagram,
-//       twitter,
-//       youtube
-//     },
-//     featured,
-//     "articles": *[_type == 'magazine' && author._ref == ^._id] | order(publishedAt desc) {
-//       _id,
-//       _type,
-//       title,
-//       "slug": slug.current,
-//       thumbnail {
-//         asset->{
-//           _id,
-//           url,
-//           metadata {
-//             lqip,
-//             dimensions {
-//               width,
-//               height,
-//               aspectRatio
-//             }
-//           }
-//         },
-//         alt,
-//         hotspot,
-//         crop
-//       },
-//       publishedAt,
-//       duration
-//     },
-//     "articleCount": count(*[_type == 'magazine' && author._ref == ^._id]),
-//     seo {
-//       metaTitle,
-//       metaDescription
-//     }
-//   }
-// `)
+export const authorsQuery = defineQuery(`
+  *[_type == 'author'] | order(name asc) {
+    _id,
+    _type,
+    name,
+    "slug": slug.current,
+    image {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    job,
+    city,
+    bio,
+    featured
+  }
+`)
 
-// // Query for single author detail page
-// export const authorDetailQuery = defineQuery(`
-//   *[_type == 'author' && slug.current == $slug][0] {
-//     _id,
-//     _type,
-//     name,
-//     "slug": slug.current,
-//     image {
-//       asset->{
-//         _id,
-//         url,
-//         metadata {
-//           lqip,
-//           dimensions {
-//             width,
-//             height,
-//             aspectRatio
-//           }
-//         }
-//       },
-//       alt,
-//       hotspot,
-//       crop
-//     },
-//     job,
-//     city,
-//     bio,
-//     fullBio,
-//     intro,
-//     socialLinks {
-//       instagram,
-//       twitter,
-//       youtube
-//     },
-//     featured,
-//     seo {
-//       metaTitle,
-//       metaDescription
-//     }
-//   }
-// `)
+// Query for author with their articles (combined)
+export const authorWithArticlesQuery = defineQuery(`
+  *[_type == 'author' && slug.current == $slug][0] {
+    _id,
+    _type,
+    name,
+    "slug": slug.current,
+    image {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    job,
+    city,
+    bio,
+    fullBio,
+    intro,
+    socialLinks {
+      instagram,
+      twitter,
+      youtube
+    },
+    featured,
+    "articles": *[_type == 'magazine' && author._ref == ^._id] | order(publishedAt desc) {
+      _id,
+      _type,
+      title,
+      "slug": slug.current,
+      thumbnail {
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        alt,
+        hotspot,
+        crop
+      },
+      publishedAt,
+      duration
+    },
+    "articleCount": count(*[_type == 'magazine' && author._ref == ^._id]),
+    seo {
+      metaTitle,
+      metaDescription
+    }
+  }
+`)
+
+// Query for single author detail page
+export const authorDetailQuery = defineQuery(`
+  *[_type == 'author' && slug.current == $slug][0] {
+    _id,
+    _type,
+    name,
+    "slug": slug.current,
+    image {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      alt,
+      hotspot,
+      crop
+    },
+    job,
+    city,
+    bio,
+    fullBio,
+    intro,
+    socialLinks {
+      instagram,
+      twitter,
+      youtube
+    },
+    featured,
+    seo {
+      metaTitle,
+      metaDescription
+    }
+  }
+`)
 
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]{
@@ -568,7 +598,7 @@ export const magazineDetailQuery = defineQuery(`
     },
     heroDescription,
     publishedAt,
-    author {
+    author-> {
       name,
       image {
         asset->{
@@ -680,7 +710,9 @@ export const latestMagazinesQuery = defineQuery(`
       crop
     },
     publishedAt,
-    "author": author.name,
+    "author": author->{
+      name
+    },
     duration,
     label
   }
@@ -761,6 +793,10 @@ export const podcastsQuery = defineQuery(`
       hotspot,
       crop
     },
+    podcastBranding {
+      name,
+      subtitle
+    },
     publishedAt,
     duration,
     featured
@@ -800,6 +836,10 @@ export const podcastDetailQuery = defineQuery(`
       spotify,
       apple,
       soundcloud
+    },
+    podcastBranding {
+      name,
+      subtitle
     },
     socialShare {
       instagram,
@@ -844,6 +884,10 @@ export const latestPodcastsQuery = defineQuery(`
       alt,
       hotspot,
       crop
+    },
+    podcastBranding {
+      name,
+      subtitle
     },
     publishedAt,
     duration
