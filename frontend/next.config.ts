@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     SC_DISABLE_SPEEDY: 'false',
   },
   images: {
+    qualities: [25, 50, 75, 100],
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,7 +14,7 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
-    ]
+    ],
   },
 }
 

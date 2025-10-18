@@ -17,8 +17,8 @@ const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.1,
+      staggerChildren: 0.3,
+      delayChildren: 0.5,
     },
   },
 }
@@ -39,8 +39,8 @@ const footerContentVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.3,
-      delayChildren: 0.4,
+      staggerChildren: 0.2,
+      delayChildren: 0.8,
     },
   },
 }
@@ -50,7 +50,7 @@ const footerSectionVariants: Variants = {
   visible: {
     transition: {
       staggerChildren: 0.15,
-      delayChildren: 0.1,
+      delayChildren: 0.2,
     },
   },
 }
@@ -84,116 +84,127 @@ const socialContainerVariants: Variants = {
   visible: {
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.2,
+      delayChildren: 0.3,
     },
   },
 }
 
 const Footer: React.FC<{footer: FooterType}> = ({footer}) => {
-  const footerTextRef = useRef<HTMLHeadingElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [words, setWords] = React.useState<string[]>([])
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !footerTextRef.current || !containerRef.current) return
-
-    const ctx = gsap.context(() => {
-      const heroHeading = new SplitText(footerTextRef.current, {
-        type: 'lines,words,chars',
-        linesClass: 'split-line',
-        wordsClass: 'split-word',
-        charsClass: 'split-char',
-      })
-
-      gsap.set(footerTextRef.current, {perspective: 400})
-
-      gsap.from(heroHeading.words, {
-        opacity: 0,
-        y: 100,
-        rotateX: -90,
-        stagger: {
-          each: 0.05,
-          from: 'start',
-        },
-        duration: 1,
-        ease: 'back.out(1.7)',
-        scrollTrigger: {
-          trigger: footerTextRef.current,
-          start: 'top 80%',
-          once: true,
-        },
-      })
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [])
+    if (footer.newsletter?.title) {
+      setWords(footer.newsletter.title.split(' '))
+    }
+  }, [footer.newsletter?.title])
 
   return (
-    <footer className="bg-black text-white" ref={containerRef}>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{once: true}}
-        className="flex flex-col gap-32 pb-[4.06rem]"
-      >
-        <motion.div className="p-5" variants={marqueeVariants}>
-          <Marquee>
-            {Array.from({length: 10}).map((_, index) => (
-              <p className="text-[1.375rem] text-white mr-6 uppercase font-semibold" key={index}>
-                {footer.marquee?.text}
-              </p>
-            ))}
-          </Marquee>
-        </motion.div>
-
-        <motion.div
-          className="wrapper flex items-center justify-between gap-6"
-          variants={footerContentVariants}
-        >
-          <h2
-            ref={footerTextRef}
-            className="split_hero_text max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2"
-          >
-            {footer.newsletter?.title}
-          </h2>
-
-          <motion.form
-            action="#"
-            className="flex items-center gap-3"
-            variants={{
-              hidden: {opacity: 0, x: 50},
-              visible: {
-                opacity: 1,
-                x: 0,
-                transition: {
-                  duration: 0.6,
-                  ease: 'easeOut',
-                  delay: 0.4,
-                },
-              },
-            }}
-          >
-            <motion.input
-              type="email"
-              placeholder={footer.newsletter?.inputPlaceholder}
-              className="max-w-[19.3125rem] min-h-[3.125rem] w-full py-2 px-[0.9375rem] bg-white placeholder:text-black text-black"
-              whileHover={{scale: 1.02}}
-              transition={{duration: 0.3, ease: 'easeOut'}}
-            />
-            <motion.button
-              type="submit"
-              className="min-h-[3.125rem] bg-white py-1 px-6 border border-white hover:bg-transparent hover:text-white transition-colors duration-200 flex items-center justify-center text-black uppercase text-sm font-medium flex-shrink-0"
-              whileHover={{scale: 1.02}}
-              transition={{duration: 0.3, ease: 'easeOut'}}
+    <div
+      className="relative h-[800px]"
+      style={{clipPath: 'polygon(0% 0, 100% 0%, 100% 100%, 0 100%)'}}
+    >
+      <div className="fixed bottom-0 h-[800px] w-full">
+        <div>
+          <footer className="bg-black text-white h-full">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{once: true, amount: 0.2, margin: '0px 0px -200px 0px'}}
+              className="flex flex-col gap-32 pb-[4.06rem] h-full justify-center"
             >
-              {footer.newsletter?.buttonText}
-            </motion.button>
-          </motion.form>
-        </motion.div>
+              <motion.div className="p-5" variants={marqueeVariants}>
+                <Marquee>
+                  {Array.from({length: 10}).map((_, index) => (
+                    <p
+                      className="text-[1.375rem] text-white mr-6 uppercase font-semibold"
+                      key={index}
+                    >
+                      {footer.marquee?.text}
+                    </p>
+                  ))}
+                </Marquee>
+              </motion.div>
 
-        <FooterBottom footer={footer} />
-      </motion.div>
-    </footer>
+              <motion.div
+                className="wrapper flex items-center justify-between gap-6"
+                variants={footerContentVariants}
+              >
+                <h2
+                  className="max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2 text-left"
+                  // style={{
+                  //   perspective: '400px',
+                  // }}
+                >
+                  {words.map((word, index) => (
+                    <motion.span
+                      key={index}
+                      className="inline-block mr-[0.25em]"
+                      initial={{
+                        opacity: 0,
+                        y: 100,
+                        rotateX: -90,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                        rotateX: 0,
+                      }}
+                      viewport={{once: true, amount: 0.8}}
+                      transition={{
+                        duration: 1,
+                        ease: [0.175, 0.885, 0.32, 1.275],
+                        delay: index * 0.05 + 1.2,
+                      }}
+                      style={{
+                        // transformOrigin: '50% 100%',
+                        display: 'inline-block',
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  ))}
+                </h2>
+
+                <motion.form
+                  action="#"
+                  className="flex items-center gap-3"
+                  variants={{
+                    hidden: {opacity: 0, x: 50},
+                    visible: {
+                      opacity: 1,
+                      x: 0,
+                      transition: {
+                        duration: 0.6,
+                        ease: 'easeOut',
+                      },
+                    },
+                  }}
+                >
+                  <motion.input
+                    type="email"
+                    placeholder={footer.newsletter?.inputPlaceholder}
+                    className="max-w-[19.3125rem] min-h-[3.125rem] w-full py-2 px-[0.9375rem] bg-white placeholder:text-black text-black"
+                    whileHover={{scale: 1.02}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
+                  />
+                  <motion.button
+                    type="submit"
+                    className="min-h-[3.125rem] bg-white py-1 px-6 border border-white hover:bg-transparent hover:text-white transition-colors duration-200 flex items-center justify-center text-black uppercase text-sm font-medium flex-shrink-0"
+                    whileHover={{scale: 1.02}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
+                  >
+                    {footer.newsletter?.buttonText}
+                  </motion.button>
+                </motion.form>
+              </motion.div>
+
+              <FooterBottom footer={footer} />
+            </motion.div>
+          </footer>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -207,14 +218,11 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
         hidden: {},
         visible: {
           transition: {
-            staggerChildren: 0.2,
-            delayChildren: 0.3,
+            staggerChildren: 0.25,
+            delayChildren: 0.6,
           },
         },
       }}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{once: true, amount: 0.3}}
     >
       <div className="flex gap-[18.75rem] w-full">
         <motion.div className="flex-1" variants={linkVariants}>
@@ -242,7 +250,7 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
                 transition: {
                   duration: 0.5,
                   ease: 'easeOut',
-                  staggerChildren: 0.1,
+                  staggerChildren: 0.08,
                   delayChildren: 0.1,
                 },
               },
@@ -283,7 +291,7 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
                 transition: {
                   duration: 0.5,
                   ease: 'easeOut',
-                  staggerChildren: 0.1,
+                  staggerChildren: 0.08,
                   delayChildren: 0.1,
                 },
               },
@@ -324,7 +332,7 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
                 transition: {
                   duration: 0.5,
                   ease: 'easeOut',
-                  staggerChildren: 0.1,
+                  staggerChildren: 0.08,
                   delayChildren: 0.1,
                 },
               },
@@ -365,7 +373,7 @@ const FooterBottom: React.FC<{footer: FooterType}> = ({footer}) => {
           visible: {
             transition: {
               staggerChildren: 0.2,
-              delayChildren: 0.4,
+              delayChildren: 0.5,
             },
           },
         }}
