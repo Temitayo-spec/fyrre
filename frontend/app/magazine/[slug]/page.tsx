@@ -69,7 +69,6 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 export default async function MagazineDetailPage(props: PageProps) {
   const params = await props.params
 
-  // Fetch magazine details and latest posts in parallel
   const [{data: magazine}, {data: latestPosts}] = await Promise.all([
     sanityFetch({
       query: magazineDetailQuery,
@@ -81,7 +80,6 @@ export default async function MagazineDetailPage(props: PageProps) {
     }),
   ])
 
-  // If magazine not found, show 404
   if (!magazine?._id) {
     notFound()
   }

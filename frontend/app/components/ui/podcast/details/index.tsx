@@ -1,3 +1,4 @@
+'use client'
 import CustomPortableText from '@/app/components/PortableText'
 import {
   AppleIcon,
@@ -7,25 +8,67 @@ import {
   Twitter,
   Youtube,
 } from '@/app/components/shared/Icons'
+import {LineReveal} from '@/app/components/shared/LineReveal'
 import {formatDate} from '@/lib'
 import arrow from '@/public/svgs/arrow.svg'
 import {PodcastDetailQueryResult} from '@/sanity.types'
 import Image from 'next/image'
 import Link from 'next/link'
-import {FC} from 'react'
+import {FC, useEffect, useRef} from 'react'
+import {motion} from 'framer-motion'
+import gsap from 'gsap'
+import {ScrollTrigger} from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 const PodcastDetailsSection: FC<{podcast: PodcastDetailQueryResult}> = ({podcast}) => {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const asideRef = useRef<HTMLDivElement>(null)
+
   const socialLinks = [
     {icon: <Instagram />, href: podcast?.socialShare?.instagram!, label: 'Instagram'},
     {icon: <Twitter />, href: podcast?.socialShare?.twitter!, label: 'X'},
     {icon: <Youtube />, href: podcast?.socialShare?.youtube!, label: 'YouTube'},
   ]
 
+  const platforms = [
+    {icon: <SpotifyIcon />, href: podcast?.podcastLinks?.spotify as string, label: 'Spotify'},
+    {icon: <AppleIcon />, href: podcast?.podcastLinks?.apple as string, label: 'Apple Podcasts'},
+    {
+      icon: <SoundcloudIcon />,
+      href: podcast?.podcastLinks?.soundcloud as string,
+      label: 'Soundcloud',
+    },
+  ]
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !sectionRef.current || !asideRef.current) return
+
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: asideRef.current,
+      })
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section className="mb-48">
+    <section className="mb-48  pt-6" ref={sectionRef}>
       <div className="max-w-[75rem] w-[90%] mx-auto flex gap-24">
-        <div className="max-w-[21.875rem] flex-1">
-          <div className="relative max-w-[21.875rem] flex-1 mb-8">
+        <aside ref={asideRef} className="max-w-[21.875rem] w-full">
+          <motion.div
+            initial={{opacity: 0, scale: 0.95}}
+            whileInView={{opacity: 1, scale: 1}}
+            viewport={{once: true, amount: 0.3}}
+            transition={{duration: 0.8, ease: [0.33, 1, 0.68, 1]}}
+            className="relative max-w-[21.875rem] flex-1 mb-8"
+          >
             <Image
               src={podcast?.thumbnail?.asset?.url as string}
               alt="podcast"
@@ -37,80 +80,170 @@ const PodcastDetailsSection: FC<{podcast: PodcastDetailQueryResult}> = ({podcast
               height={500}
             />
 
-            <div className="absolute top-4 left-4">
+            <motion.div
+              initial={{opacity: 0, y: -10}}
+              whileInView={{opacity: 1, y: 0}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{duration: 0.6, delay: 0.2, ease: 'easeOut'}}
+              className="absolute top-4 left-4"
+            >
               <h3 className="text-[2.73438rem] uppercase font-semibold text-white">Fyrre</h3>
               <p className="text-[1.36719rem] uppercase font-semibold text-white -translate-y-3 inline-flex">
                 Podcast
               </p>
-            </div>
+            </motion.div>
 
-            <div className="absolute bottom-[1.47rem] px-4 flex items-end justify-between w-full">
+            <motion.div
+              initial={{opacity: 0, y: 10}}
+              whileInView={{opacity: 1, y: 0}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{duration: 0.6, delay: 0.3, ease: 'easeOut'}}
+              className="absolute bottom-[1.47rem] px-4 flex items-end justify-between w-full"
+            >
               <h4 className="text-[1.36719rem] font-semibold text-white uppercase">EP{'05'}</h4>
               <Image src={arrow} alt="arrow" className="w-[2.72669rem]" />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div className="flex items-center justify-between mb-12">
-            <p className="text-xl font-semibold leading-[160%]">Listen On</p>
+          <motion.div
+            initial={{opacity: 0, y: 20}}
+            whileInView={{opacity: 1, y: 0}}
+            viewport={{once: true, amount: 0.3}}
+            transition={{duration: 0.6, delay: 0.2, ease: 'easeOut'}}
+            className="flex items-center justify-between mb-12"
+          >
+            <motion.p
+              initial={{opacity: 0, x: -10}}
+              whileInView={{opacity: 1, x: 0}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{duration: 0.5, delay: 0.3, ease: 'easeOut'}}
+              className="text-xl font-semibold leading-[160%]"
+            >
+              Listen On
+            </motion.p>
 
             <div className="flex items-center gap-4">
-              <Link href="#">
-                <SpotifyIcon />
-              </Link>
-              <Link href="#">
-                <AppleIcon />
-              </Link>
-              <Link href="#">
-                <SoundcloudIcon />
-              </Link>
+              {platforms.map((platform, index) => (
+                <motion.div
+                  key={index}
+                  initial={{opacity: 0, scale: 0.8}}
+                  whileInView={{opacity: 1, scale: 1}}
+                  viewport={{once: true, amount: 0.3}}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.4 + index * 0.1,
+                    ease: 'easeOut',
+                  }}
+                  whileHover={{scale: 1.15}}
+                  whileTap={{scale: 0.95}}
+                >
+                  <Link
+                    href={platform.href || '#'}
+                    aria-label={platform.label}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {platform.icon}
+                  </Link>
+                </motion.div>
+              ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div className="pt-8 border-t border-black">
+          <motion.div
+            initial={{opacity: 0, y: 20}}
+            whileInView={{opacity: 1, y: 0}}
+            viewport={{once: true, amount: 0.3}}
+            transition={{duration: 0.6, delay: 0.4, ease: 'easeOut'}}
+            className="pt-8 border-t border-black"
+          >
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
+              <motion.div
+                initial={{opacity: 0, y: 10}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true, amount: 0.3}}
+                transition={{duration: 0.5, delay: 0.5, ease: 'easeOut'}}
+                className="flex items-center justify-between"
+              >
                 <p className="text-base leading-[180%] font-semibold">Date</p>
                 <p className="text-base leading-[180%]">
                   {formatDate(podcast?.publishedAt as string)}
                 </p>
-              </div>
-              <div className="flex items-center justify-between">
+              </motion.div>
+
+              <motion.div
+                initial={{opacity: 0, y: 10}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true, amount: 0.3}}
+                transition={{duration: 0.5, delay: 0.6, ease: 'easeOut'}}
+                className="flex items-center justify-between"
+              >
                 <p className="text-base leading-[180%] font-semibold">Read</p>
                 <p className="text-base leading-[180%]">{podcast?.duration}</p>
-              </div>
-              <div className="flex items-center justify-between">
+              </motion.div>
+
+              <motion.div
+                initial={{opacity: 0, y: 10}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true, amount: 0.3}}
+                transition={{duration: 0.5, delay: 0.7, ease: 'easeOut'}}
+                className="flex items-center justify-between"
+              >
                 <p className="text-base leading-[180%] font-semibold">Share</p>
 
                 <div className="flex space-x-4">
                   {socialLinks.map((social, index) => (
-                    <a
+                    <motion.a
                       key={index}
+                      initial={{opacity: 0, scale: 0.8}}
+                      whileInView={{opacity: 1, scale: 1}}
+                      viewport={{once: true, amount: 0.3}}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.8 + index * 0.1,
+                        ease: 'easeOut',
+                      }}
+                      whileHover={{scale: 1.15, rotate: 5}}
+                      whileTap={{scale: 0.95}}
                       href={social?.href as string}
                       className="text-black transition-colors duration-200"
                       aria-label={social.label}
                       target="_blank"
                     >
                       {social.icon}
-                    </a>
+                    </motion.a>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </aside>
 
-        <div className="space-y-16 flex-2">
+        <div className="space-y-16 flex-2 w-full">
           <header className="space-y-8">
             <div className="space-y-4">
               <h4 className="text-base font-semibold uppercase">
-                Episode {podcast?.episodeNumber}
+                <LineReveal
+                  text={`Episode ${podcast?.episodeNumber}`}
+                  className="text-base font-semibold uppercase"
+                />
               </h4>
               <h2 className="text-[6.25rem] font-semibold leading-[100%] uppercase">
-                {podcast?.title}
+                <LineReveal
+                  text={podcast?.title as string}
+                  className="text-[6.25rem] font-semibold leading-[100%] uppercase"
+                  delay={0.3}
+                />
               </h2>
             </div>
 
-            <p className="font-medium text-[1.375rem] leading-[180%]">{podcast?.excerpt}</p>
+            <p className="font-medium text-[1.375rem] leading-[180%]">
+              <LineReveal
+                text={podcast?.excerpt as string}
+                className="font-medium text-[1.375rem] leading-[180%]"
+                delay={0.5}
+              />
+            </p>
           </header>
 
           <article className="flex-1">

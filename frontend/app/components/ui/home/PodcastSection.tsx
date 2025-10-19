@@ -2,42 +2,13 @@
 import React, {FC} from 'react'
 import {motion, Variants} from 'framer-motion'
 import LinkWithSVG from '../../shared/LinkWithSVG'
-import podcast_1 from '@/public/images/podcast_1.png'
-import podcast_2 from '@/public/images/podcast_2.png'
-import podcast_3 from '@/public/images/podcast_3.png'
 import arrow from '@/public/svgs/arrow.svg'
-import Image, {StaticImageData} from 'next/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import {Podcast, PodcastSection as PodcastSectionType} from '@/sanity.types'
+import { formatDate } from '@/lib'
 
-const podcasts = [
-  {
-    thumbnail: podcast_1,
-    title: "The Problem of today's cultural development",
-    episode_num: '05',
-    publishedAt: '16.06.2022',
-    duration: '1h 20 Min',
-    slug: '/podcast/the-problem-of-todays-cultural-development',
-  },
-  {
-    thumbnail: podcast_2,
-    title: 'The hidden messages of Jack Nielson',
-    episode_num: '04',
-    publishedAt: '16.06.2022',
-    duration: '45 Min',
-    slug: '/podcast/the-hidden-messages-of-jack-nielson',
-  },
-  {
-    thumbnail: podcast_3,
-    title: 'Behind the scenes of the street art culture',
-    episode_num: '03',
-    publishedAt: '16.06.2022',
-    duration: '45 Min',
-    slug: '/podcast/behind-the-scenes-of-the-street-art-culture',
-  },
-]
 
-// Animation variants
 const containerVariants: Variants = {
   hidden: {},
   visible: {
@@ -131,7 +102,10 @@ const PodcastSection: FC<{props: PodcastSectionType}> = ({props}) => {
 
           <div className="overflow-hidden">
             <motion.div variants={linkContainerVariants}>
-              <LinkWithSVG text={props?.allEpisodesLinkText || 'All Episodes'} href={props?.allEpisodesLinkUrl || '/podcast'} />
+              <LinkWithSVG
+                text={props?.allEpisodesLinkText || 'All Episodes'}
+                href={props?.allEpisodesLinkUrl || '/podcast'}
+              />
             </motion.div>
           </div>
 
@@ -153,8 +127,11 @@ const PodcastSection: FC<{props: PodcastSectionType}> = ({props}) => {
         >
           {props?.episodes?.map((podcast, index) => (
             <motion.div key={index} variants={itemVariants} className="flex-1 relative">
-              <PodcastCard {...(podcast as unknown as Podcast)} podcastBranding={props.podcastBranding} />
-              {index < podcasts.length - 1 && (
+              <PodcastCard
+                {...(podcast as unknown as Podcast)}
+                podcastBranding={props.podcastBranding}
+              />
+              {index < props?.episodes?.length - 1 && (
                 <motion.div
                   className="absolute top-0 right-0 w-[1px] h-full bg-black"
                   variants={lineVariants}
@@ -222,7 +199,7 @@ export const PodcastCard: FC<Podcast & {
   podcastBranding
 }) => {
   return (
-    <Link href={`/podcast/${slug}`} className="flex flex-1">
+    <Link href={`/podcast/${slug}`} className="flex flex-1 h-full">
       <motion.div
         className="p-[2.5rem] border-[0.5px] border-black space-y-8 group hover:shadow-lg transition-shadow duration-300"
         transition={{duration: 0.3, ease: 'easeOut'}}
@@ -258,7 +235,7 @@ export const PodcastCard: FC<Podcast & {
           <div className="flex gap-4">
             <p className="flex gap-2 text-sm leading-[160%]">
               <span className="font-semibold">Date</span>
-              {publishedAt}
+              {formatDate(publishedAt as string)}
             </p>
             <p className="flex gap-2 text-sm leading-[160%]">
               <span className="font-semibold">Duration</span>

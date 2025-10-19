@@ -1,11 +1,22 @@
+'use client'
 import CustomPortableText from '@/app/components/PortableText'
 import {Instagram, Twitter, Youtube} from '@/app/components/shared/Icons'
 import {formatDate} from '@/lib'
 import {MagazineDetailQueryResult} from '@/sanity.types'
 import Image from 'next/image'
-import {FC} from 'react'
+import {FC, useEffect, useRef} from 'react'
+import {motion} from 'framer-motion'
+import gsap from 'gsap'
+import {ScrollTrigger} from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({magazine}) => {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const asideRef = useRef<HTMLDivElement>(null)
+
   const socialLinks = [
     {
       icon: <Instagram />,
@@ -24,12 +35,40 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
     },
   ].filter((link) => link.href)
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !sectionRef.current || !asideRef.current) return
+
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: asideRef.current,
+        //pinSpacing: false,
+      })
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section className="relative">
+    <section className="relative" ref={sectionRef}>
       <div className="max-w-[65rem] w-full mx-auto flex gap-16 pt-24 pb-48">
-        <aside className="flex-1 max-w-[20rem] flex flex-col">
-          <div className="pb-8 border-b border-black mb-8 flex items-center gap-4">
-            <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden flex-shrink-0">
+        <aside ref={asideRef} className="w-full max-w-[20rem] flex flex-col">
+          <motion.div
+            initial={{opacity: 0, y: 20}}
+            whileInView={{opacity: 1, y: 0}}
+            viewport={{once: true, amount: 0.3}}
+            transition={{duration: 0.6, ease: 'easeOut'}}
+            className="pb-8 border-b border-black mb-8 flex items-center gap-4"
+          >
+            <motion.div
+              initial={{opacity: 0, scale: 0.8}}
+              whileInView={{opacity: 1, scale: 1}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{duration: 0.6, delay: 0.1, ease: 'easeOut'}}
+              className="w-[5rem] h-[5rem] rounded-full overflow-hidden flex-shrink-0"
+            >
               <Image
                 src={magazine?.author?.image?.asset?.url as string}
                 alt={magazine?.author?.image?.alt || magazine?.author?.name || 'Author'}
@@ -39,31 +78,65 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
                 placeholder="blur"
                 blurDataURL={magazine?.author?.image?.asset?.metadata?.lqip as string}
               />
-            </div>
-            <h3 className="text-[2rem] leading-[120%] max-w-[14.3125rem] font-semibold">
+            </motion.div>
+            <motion.h3
+              initial={{opacity: 0, x: -10}}
+              whileInView={{opacity: 1, x: 0}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{duration: 0.6, delay: 0.2, ease: 'easeOut'}}
+              className="text-[2rem] leading-[120%] max-w-[14.3125rem] font-semibold"
+            >
               {magazine?.author?.name}
-            </h3>
-          </div>
+            </motion.h3>
+          </motion.div>
 
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
+            <motion.div
+              initial={{opacity: 0, y: 10}}
+              whileInView={{opacity: 1, y: 0}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{duration: 0.5, delay: 0.3, ease: 'easeOut'}}
+              className="flex items-center justify-between"
+            >
               <p className="text-base leading-[180%] font-semibold">Date</p>
               <p className="text-base leading-[180%]">
                 {formatDate(magazine?.publishedAt as string)}
               </p>
-            </div>
-            <div className="flex items-center justify-between">
+            </motion.div>
+
+            <motion.div
+              initial={{opacity: 0, y: 10}}
+              whileInView={{opacity: 1, y: 0}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{duration: 0.5, delay: 0.4, ease: 'easeOut'}}
+              className="flex items-center justify-between"
+            >
               <p className="text-base leading-[180%] font-semibold">Read</p>
               <p className="text-base leading-[180%]">{magazine?.duration} Min</p>
-            </div>
+            </motion.div>
 
             {socialLinks.length > 0 && (
-              <div className="flex items-center justify-between">
+              <motion.div
+                initial={{opacity: 0, y: 10}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true, amount: 0.3}}
+                transition={{duration: 0.5, delay: 0.5, ease: 'easeOut'}}
+                className="flex items-center justify-between"
+              >
                 <p className="text-base leading-[180%] font-semibold">Share</p>
                 <div className="flex space-x-4">
                   {socialLinks.map((social, index) => (
-                    <a
+                    <motion.a
                       key={index}
+                      initial={{opacity: 0, scale: 0.8}}
+                      whileInView={{opacity: 1, scale: 1}}
+                      viewport={{once: true, amount: 0.3}}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.6 + index * 0.1,
+                        ease: 'easeOut',
+                      }}
+                      whileHover={{scale: 1.1}}
                       href={social.href as string}
                       className="text-black transition-colors duration-200 hover:opacity-70"
                       aria-label={social.label}
@@ -71,15 +144,15 @@ const MagazineDetailsCoreSection: FC<{magazine: MagazineDetailQueryResult}> = ({
                       rel="noopener noreferrer"
                     >
                       {social.icon}
-                    </a>
+                    </motion.a>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
         </aside>
 
-        <article className="flex-1">
+        <article className="flex-1 w-full">
           {magazine?.content && <CustomPortableText value={magazine.content as any} />}
         </article>
       </div>

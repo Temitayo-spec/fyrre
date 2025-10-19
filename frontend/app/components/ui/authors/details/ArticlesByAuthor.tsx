@@ -1,8 +1,11 @@
-import { formatDate } from '@/lib'
+'use client'
+import {LineReveal} from '@/app/components/shared/LineReveal'
+import {formatDate} from '@/lib'
 import {AuthorWithArticlesQueryResult} from '@/sanity.types'
 import Image from 'next/image'
 import Link from 'next/link'
 import {FC} from 'react'
+import {motion} from 'framer-motion'
 
 const ArticlesByAuthor: FC<{
   articles: NonNullable<AuthorWithArticlesQueryResult>['articles']
@@ -11,41 +14,94 @@ const ArticlesByAuthor: FC<{
   return (
     <section className="mb-48">
       <div className="wrapper pt-12 border-t border-black space-y-24">
-        <h2 className="text-[4.5rem] leading-[110%] font-semibold">Articles by {authorName}</h2>
+        <h2 className="text-[4.5rem] leading-[110%] font-semibold">
+          <LineReveal
+            text={`Articles by ${authorName}`}
+            className="text-[4.5rem] leading-[110%] font-semibold"
+          />
+        </h2>
 
-        <div className="border-[0.5px] border-black grid grid-cols-2">
-          {articles?.slice(0, 4).map((magazine, index) => (
-            <Link href={`/magazine/${magazine.slug}`} key={index}>
-              <div className="flex gap-12 items-center p-8 border-[0.5px] border-black">
-                <div className="w-[9.375rem] h-[9.375rem] relative">
-                  <Image
-                    src={magazine.thumbnail?.asset?.url as string}
-                    alt={magazine.title}
-                    className="object-cover"
-                    fill
-                    quality={100}
-                    placeholder="blur"
-                    blurDataURL={magazine.thumbnail?.asset?.metadata?.lqip as string}
-                  />
-                </div>
+        <motion.div
+          initial={{opacity: 0, y: 30}}
+          whileInView={{opacity: 1, y: 0}}
+          viewport={{once: true, amount: 0.1}}
+          transition={{duration: 0.6, delay: 0.3, ease: 'easeOut'}}
+          className="border-[0.5px] border-black grid grid-cols-2"
+        >
+          {articles?.map((magazine, index) => (
+            <motion.div
+              key={index}
+              initial={{opacity: 0, y: 20}}
+              whileInView={{opacity: 1, y: 0}}
+              viewport={{once: true, amount: 0.3}}
+              transition={{
+                duration: 0.6,
+                delay: 0.4 + index * 0.15,
+                ease: 'easeOut',
+              }}
+            >
+              <Link href={`/magazine/${magazine.slug}`}>
+                <motion.div
+                  whileHover={{backgroundColor: 'rgba(0, 0, 0, 0.02)'}}
+                  transition={{duration: 0.3}}
+                  className="flex gap-12 items-center p-8 border-[0.5px] border-black"
+                >
+                  <motion.div
+                    whileHover={{scale: 1.05}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
+                    className="w-[9.375rem] h-[9.375rem] relative overflow-hidden"
+                  >
+                    <Image
+                      src={magazine.thumbnail?.asset?.url as string}
+                      alt={magazine.title}
+                      className="object-cover"
+                      fill
+                      quality={100}
+                      placeholder="blur"
+                      blurDataURL={magazine.thumbnail?.asset?.metadata?.lqip as string}
+                    />
+                  </motion.div>
 
-                <div className="space-y-4">
-                  <h3 className="text-[2rem] font-semibold leading-[120%]">{magazine.title}</h3>
-                  <div className="flex gap-8 text-sm leading-[160%]">
-                    <p className="flex gap-2">
-                      <span className="font-semibold">Date</span>
-                      <span>{formatDate(magazine.publishedAt as string)}</span>
-                    </p>
-                    <p className="flex gap-2">
-                      <span className="font-semibold">Read</span>
-                      <span>{magazine.duration} min</span>
-                    </p>
+                  <div className="space-y-4">
+                    <motion.h3
+                      initial={{opacity: 0, x: -10}}
+                      whileInView={{opacity: 1, x: 0}}
+                      viewport={{once: true, amount: 0.3}}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.5 + index * 0.15,
+                        ease: 'easeOut',
+                      }}
+                      className="text-[2rem] font-semibold leading-[120%]"
+                    >
+                      {magazine.title}
+                    </motion.h3>
+                    <motion.div
+                      initial={{opacity: 0}}
+                      whileInView={{opacity: 1}}
+                      viewport={{once: true, amount: 0.3}}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.6 + index * 0.15,
+                        ease: 'easeOut',
+                      }}
+                      className="flex gap-8 text-sm leading-[160%]"
+                    >
+                      <p className="flex gap-2">
+                        <span className="font-semibold">Date</span>
+                        <span>{formatDate(magazine.publishedAt as string)}</span>
+                      </p>
+                      <p className="flex gap-2">
+                        <span className="font-semibold">Read</span>
+                        <span>{magazine.duration} min</span>
+                      </p>
+                    </motion.div>
                   </div>
-                </div>
-              </div>
-            </Link>
+                </motion.div>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

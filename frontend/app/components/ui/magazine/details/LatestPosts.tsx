@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import MagazineCard from '../MagazineCard'
 import { LatestMagazinesQueryResult, MagazineQueryResult } from '@/sanity.types';
+import { LineReveal } from '@/app/components/shared/LineReveal';
 
 const LatestPosts = ({slug, magazines}: {slug: string; magazines: LatestMagazinesQueryResult}) => {
   const filteredMagazines = magazines.filter(
@@ -10,7 +11,9 @@ const LatestPosts = ({slug, magazines}: {slug: string; magazines: LatestMagazine
     <section aria-label="Latest magazine posts" className='mb-48'>
       <div className="pt-12 border-t border-black flex flex-col gap-24 wrapper">
         <div className="flex items-center justify-between">
-          <h2 className="text-[6.5rem] font-semibold leading-[110%] uppercase">Latest Posts</h2>
+          <h2 className="text-[6.5rem] font-semibold leading-[110%] uppercase">
+            <LineReveal text="Latest Posts" className="text-[6.5rem] font-semibold leading-[110%] uppercase" />
+          </h2>
 
           <Link
             href="/magazine"

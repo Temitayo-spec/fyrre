@@ -18,7 +18,7 @@
   --font-general-sans: var(--font-general-sans);
 }
 
-button{
+button {
   cursor: pointer;
 }
 
@@ -37,6 +37,10 @@ button{
 .category-btn {
   position: relative;
   overflow: hidden;
+  background: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .category-btn::before {
@@ -48,20 +52,28 @@ button{
   transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* Hover: circle grows from bottom */
 .category-btn:hover::before {
   clip-path: circle(150% at 50% 100%);
+}
+
+/* On hover out, shrink from top instead of bottom */
+.category-btn:not(:hover):not(.active)::before {
+  clip-path: circle(0% at 50% 0%);
 }
 
 .category-btn-content {
   position: relative;
   z-index: 1;
   transition: color 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  color: black;
 }
 
 .category-btn:hover .category-btn-content {
   color: white;
 }
 
+/* Active state */
 .category-btn.active::before {
   clip-path: circle(150% at 50% 100%);
 }

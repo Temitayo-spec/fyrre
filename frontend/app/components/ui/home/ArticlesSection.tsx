@@ -68,12 +68,10 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
     if (!containerRef.current || !sidebarRef.current || !leftColumnRef.current) return
 
     const ctx = gsap.context(() => {
-      // Calculate how much shorter the sidebar is compared to left column
       const leftHeight = leftColumnRef.current!.offsetHeight
       const sidebarHeight = sidebarRef.current!.offsetHeight
       const heightDiff = leftHeight - sidebarHeight
 
-      // Pin the sidebar with parallax
       ScrollTrigger.create({
         trigger: leftColumnRef.current,
         start: 'top top',
@@ -82,7 +80,6 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
         pinSpacing: false,
         anticipatePin: 1,
         onUpdate: (self) => {
-          // Apply parallax - move the sidebar down as we scroll so content stays visible
           const parallaxAmount = heightDiff > 0 ? heightDiff * self.progress * 2 : 0
           gsap.to(sidebarRef.current, {
             y: -parallaxAmount,

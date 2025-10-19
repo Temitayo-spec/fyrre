@@ -130,12 +130,7 @@ const Footer: React.FC<{footer: FooterType}> = ({footer}) => {
                 className="wrapper flex items-center justify-between gap-6"
                 variants={footerContentVariants}
               >
-                <h2
-                  className="max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2 text-left"
-                  // style={{
-                  //   perspective: '400px',
-                  // }}
-                >
+                <h2 className="max-w-[49.40131rem] text-[5rem] font-semibold leading-[110%] uppercase text-white-2 text-left">
                   {words.map((word, index) => (
                     <motion.span
                       key={index}
@@ -157,7 +152,6 @@ const Footer: React.FC<{footer: FooterType}> = ({footer}) => {
                         delay: index * 0.05 + 1.2,
                       }}
                       style={{
-                        // transformOrigin: '50% 100%',
                         display: 'inline-block',
                       }}
                     >

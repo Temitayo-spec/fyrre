@@ -16,7 +16,7 @@ export function processLink(link: Link | null | undefined): ProcessedLink {
 
   switch (linkType) {
     case 'page':
-      if (page) {
+      if (page as any) {
         // Remove leading slash if present and add it back to ensure proper format
         const cleanPage = page.startsWith('/') ? page.slice(1) : page
         return {
@@ -27,7 +27,7 @@ export function processLink(link: Link | null | undefined): ProcessedLink {
       }
       return {href: '#', isExternal: false}
 
-    case 'url':
+    case 'href':
       if (url) {
         return {
           href: url,

@@ -10,6 +10,7 @@
 import {PortableText, type PortableTextComponents, type PortableTextBlock} from 'next-sanity'
 import Image from 'next/image'
 import ResolvedLink from '@/app/components/ResolvedLink'
+import { LineReveal } from './shared/LineReveal'
 
 export default function CustomPortableText({
   className,
@@ -20,7 +21,9 @@ export default function CustomPortableText({
 }) {
   const components: PortableTextComponents = {
     block: {
-      normal: ({children}) => <p className="text-xl leading-[180%] mb-6">{children}</p>,
+      normal: ({ children }) => <p className="text-xl leading-[180%] mb-6">
+        <LineReveal text={children as string} className="text-xl leading-[180%] mb-6" />
+      </p>,
       h1: ({children, value}) => (
         <h1 className="text-4xl font-bold mb-6 group relative" id={value?._key}>
           {children}
@@ -74,8 +77,12 @@ export default function CustomPortableText({
         <div className="my-12 py-12 border-t border-b border-black flex gap-6">
           <span className="text-[6rem] font-semibold leading-[100%]">“</span>
           <div className="flex flex-col gap-6">
-            <div className="text-[3rem] font-semibold leading-[120%]">{value.text}</div>
-            {value.attribution && <p className="text-sm leading-[160%]">{value.attribution}</p>}
+            <div className="text-[3rem] font-semibold leading-[120%]">
+              <LineReveal text={value.text} className="text-[3rem] font-semibold leading-[120%]" />
+            </div>
+            {value.attribution && <p className="text-sm leading-[160%]">
+              <LineReveal text={value.attribution} className="text-sm leading-[160%]" delay={0.3} />
+            </p>}
           </div>
         </div>
       ),

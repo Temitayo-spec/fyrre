@@ -67,15 +67,35 @@ const socialContainerVariants: Variants = {
   },
 }
 
-const socialLinks = [
-  {icon: <Instagram />, href: 'https://instagram.com', label: 'Instagram'},
-  {icon: <Twitter />, href: 'https://x.com', label: 'X'},
-  {icon: <Youtube />, href: 'https://youtube.com', label: 'YouTube'},
-  {icon: <RSS />, href: '/rss', label: 'RSS Feed'},
-]
+const navItemVariants: Variants = {
+  hidden: {opacity: 0, y: -10},
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const underlineVariants: Variants = {
+  initial: {scaleX: 0, originX: 0},
+  hover: {
+    scaleX: 1,
+    transition: {
+      duration: 0.3,
+      ease: 'easeOut',
+    },
+  },
+  active: {
+    scaleX: 1,
+  },
+}
 
 const Header: FC<{navbar: NavbarType}> = ({navbar}) => {
   const pathname = usePathname()
+
   return (
     <nav>
       <motion.div
@@ -100,12 +120,39 @@ const Header: FC<{navbar: NavbarType}> = ({navbar}) => {
 
         <ul className="flex items-center gap-6">
           {navbar?.navLinks?.map((link, idx) => {
-            const isActive = pathname.includes(link.url)
+            const isActive =
+              pathname === link.url || (link.url !== '/' && pathname.startsWith(link.url))
+
             return (
-              <motion.li key={link.url} className="relative flex items-center">
-                <Link href={link.url} className="text-xl">
-                  {link.text}
-                </Link>
+              <motion.li
+                key={link.url}
+                className="relative flex items-center"
+                variants={navItemVariants}
+              >
+                {isActive ? (
+                  <span
+                    className="text-xl cursor-default relative"
+                    style={{pointerEvents: 'none'}}
+                  >
+                    {link.text}
+                    <motion.div
+                      className="absolute bottom-0 left-0 w-full h-[1px] bg-black"
+                      variants={underlineVariants}
+                      initial="initial"
+                      animate="active"
+                    />
+                  </span>
+                ) : (
+                  <motion.div className="relative" initial="initial" whileHover="hover">
+                    <Link href={link.url} className="text-xl">
+                      {link.text}
+                    </Link>
+                    <motion.div
+                      className="absolute bottom-0 left-0 w-full h-[1px] bg-black"
+                      variants={underlineVariants}
+                    />
+                  </motion.div>
+                )}
               </motion.li>
             )
           })}

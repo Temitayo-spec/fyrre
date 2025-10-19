@@ -4,9 +4,9 @@ import {motion, AnimatePresence, Variants} from 'framer-motion'
 import MagazineCard from './MagazineCard'
 import PaginationButton from './PaginationButton'
 import CategoryButton from './CategoryButton'
-import {Magazine, MagazineQueryResult} from '@/sanity.types'
+import {MagazineQueryResult} from '@/sanity.types'
 
-const ITEMS_PER_PAGE = 9
+const ITEMS_PER_PAGE = 6
 
 const headerContainerVariants: Variants = {
   hidden: {opacity: 0},
@@ -51,6 +51,17 @@ const categoryVariants: Variants = {
     transition: {
       duration: 0.4,
       ease: [0.34, 1.56, 0.64, 1],
+    },
+  },
+}
+
+const gridContainerVariants: Variants = {
+  hidden: {opacity: 1},
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
     },
   },
 }
@@ -161,9 +172,13 @@ const MagazineCoreSection: FC<{magazines: MagazineQueryResult}> = ({magazines}) 
         </motion.header>
 
         <AnimatePresence mode="wait" custom={exitDirection}>
-          <div
+          <motion.div
             key={`${activeCategory}-${currentPage}`}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 relative border-[0.5px] border-black"
+            variants={gridContainerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
           >
             {currentMagazines.length > 0 ? (
               currentMagazines.map((magazine, index) => (
@@ -171,10 +186,6 @@ const MagazineCoreSection: FC<{magazines: MagazineQueryResult}> = ({magazines}) 
                   key={`${magazine.title}-${index}`}
                   variants={cardVariants}
                   custom={exitDirection}
-                  initial="hidden"
-                  whileInView="visible"
-                  exit="exit"
-                  viewport={{once: true, amount: 0.2, margin: '0px 0px -100px 0px'}}
                 >
                   <MagazineCard magazine={magazine as MagazineQueryResult[0]} />
                 </motion.div>
@@ -189,7 +200,7 @@ const MagazineCoreSection: FC<{magazines: MagazineQueryResult}> = ({magazines}) 
                 <p className="text-lg">No magazines found in this category.</p>
               </motion.div>
             )}
-          </div>
+          </motion.div>
         </AnimatePresence>
 
         {(hasPrevPage || hasNextPage) && (
