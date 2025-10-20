@@ -1,5 +1,5 @@
 'use client'
-import {FC, useEffect, useRef} from 'react'
+import {FC, useEffect, useRef, useState} from 'react'
 import Marquee from 'react-fast-marquee'
 import Image from 'next/image'
 import gsap from 'gsap'
@@ -7,7 +7,7 @@ import {DrawSVGPlugin} from 'gsap/DrawSVGPlugin'
 import {SplitText} from 'gsap/SplitText'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import {HeroSection} from '@/sanity.types'
-import { formatDate } from '@/lib'
+import {formatDate} from '@/lib'
 
 gsap.registerPlugin(DrawSVGPlugin, SplitText, ScrollTrigger)
 
@@ -15,6 +15,18 @@ const HomeHeroSection: FC<{props: HeroSection}> = ({props}) => {
   const sectionRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
   const marqueeRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState<boolean>(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -169,6 +181,7 @@ const HomeHeroSection: FC<{props: HeroSection}> = ({props}) => {
           '-=0.5',
         )
 
+        if (isMobile) return
         gsap.to(imageRef.current.querySelector('img'), {
           yPercent: -20,
           ease: 'none',
@@ -207,14 +220,14 @@ const HomeHeroSection: FC<{props: HeroSection}> = ({props}) => {
   return (
     <section ref={sectionRef} className="overflow-hidden">
       <div className="wrapper">
-        <div className="py-12">
+        <div className="py-6 md:py-12">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="1520"
             height="216"
             viewBox="0 0 1520 216"
             fill="none"
-            className="w-full h-full hero_text"
+            className="w-full h-auto hero_text"
           >
             <path
               d="M160.207 212.622H208.476L129.113 0H79.9553L0 212.622H45.308L61.5952 167.018H144.216L160.207 212.622ZM103.35 49.1577L131.778 131.186H74.3288L103.35 49.1577Z"
@@ -245,16 +258,19 @@ const HomeHeroSection: FC<{props: HeroSection}> = ({props}) => {
           </svg>
         </div>
 
-        <div ref={marqueeRef} className="bg-black p-5 gap-6 flex items-center overflow-hidden">
+        <div
+          ref={marqueeRef}
+          className="bg-black p-3 md:p-5 gap-3 md:gap-6 flex items-center overflow-hidden"
+        >
           <div className="flex-shrink-0">
-            <h3 className="text-[1.375rem] text-white font-semibold uppercase">
+            <h3 className="text-base md:text-[1.375rem] text-white font-semibold uppercase">
               {props.newsTicker?.label}
             </h3>
           </div>
           <div className="flex-1">
             <Marquee gradient={false} className="overflow-hidden">
               {props.newsTicker?.items.map((item, index) => (
-                <p className="text-xl text-white mr-6" key={index}>
+                <p className="text-sm md:text-xl text-white mr-4 md:mr-6" key={index}>
                   {item.text}
                 </p>
               ))}
@@ -262,37 +278,45 @@ const HomeHeroSection: FC<{props: HeroSection}> = ({props}) => {
           </div>
         </div>
 
-        <div className="mt-[4.73rem] flex items-center gap-12">
-          <h2 className="text-[6.5vw] font-semibold leading-[110%] uppercase text-black flex-1 split_hero_text">
+        <div className="mt-8 md:mt-[4.73rem] flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-12">
+          <h2 className="text-[10vw] sm:text-[8vw] lg:text-[6.5vw] font-semibold leading-[110%] uppercase text-black flex-1 split_hero_text">
             {props.heroHeading}
           </h2>
 
-          <div className="space-y-16 flex-1">
-            <p className="text-lg leading-[180%] text-black split">{props?.description}</p>
+          <div className="space-y-8 md:space-y-16 flex-1 w-full">
+            <p className="text-base md:text-lg leading-[180%] text-black split">
+              {props?.description}
+            </p>
 
-            <div className="flex items-center justify-between meta-info">
-              <div className="flex items-center gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:gap-4 meta-info">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-semibold leading-[160%]">
+                  <h4 className="text-xs md:text-sm font-semibold leading-[160%]">
                     {props.metadata?.author?.label}
                   </h4>
-                  <p className="text-sm leading-[160%]">{props.metadata?.author?.name}</p>
+                  <p className="text-xs md:text-sm leading-[160%]">
+                    {props.metadata?.author?.name}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-semibold leading-[160%]">
+                  <h4 className="text-xs md:text-sm font-semibold leading-[160%]">
                     {props.metadata?.date?.label}
                   </h4>
-                  <p className="text-sm leading-[160%]">{formatDate(props.metadata?.date?.value as string)}</p>
+                  <p className="text-xs md:text-sm leading-[160%]">
+                    {formatDate(props.metadata?.date?.value as string)}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-semibold leading-[160%]">
+                  <h4 className="text-xs md:text-sm font-semibold leading-[160%]">
                     {props?.metadata?.duration?.label}
                   </h4>
-                  <p className="text-sm leading-[160%]">{props?.metadata?.duration?.value}</p>
+                  <p className="text-xs md:text-sm leading-[160%]">
+                    {props?.metadata?.duration?.value}
+                  </p>
                 </div>
               </div>
 
-              <div className="grid place-items-center text-xs uppercase py-2 px-3 border border-black rounded-full label-badge">
+              <div className="grid place-items-center text-[0.625rem] md:text-xs uppercase py-1.5 md:py-2 px-2.5 md:px-3 border border-black rounded-full label-badge w-fit">
                 {props?.label?.text}
               </div>
             </div>
@@ -301,7 +325,7 @@ const HomeHeroSection: FC<{props: HeroSection}> = ({props}) => {
 
         <div
           ref={imageRef}
-          className="relative min-h-[44.5rem] max-h-[45rem] overflow-hidden mt-12"
+          className="relative max-md:min-h-full sm:min-h-[30rem] md:min-h-[44.5rem] max-h-[25rem] sm:max-h-[35rem] md:max-h-[45rem] overflow-hidden mt-8 md:mt-12"
         >
           <Image
             src={(props.heroImage as any)?.asset?.url ?? ''}

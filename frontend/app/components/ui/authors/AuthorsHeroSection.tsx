@@ -1,12 +1,12 @@
 'use client'
 import gsap from 'gsap'
-import { useEffect, useRef } from 'react'
+import {useEffect, useRef} from 'react'
 import {DrawSVGPlugin} from 'gsap/DrawSVGPlugin'
 import {SplitText} from 'gsap/SplitText'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 gsap.registerPlugin(DrawSVGPlugin, SplitText, ScrollTrigger)
 
-const PosdcastHeroSection = () => {
+const AuthorsHeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -62,14 +62,14 @@ const PosdcastHeroSection = () => {
   return (
     <section ref={sectionRef} className="overflow-hidden">
       <div className="wrapper">
-        <div className="pt-12 pb-24">
+        <div className="pt-8 pb-16 md:pt-12 md:pb-24">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="1520"
             height="231"
             viewBox="0 0 1520 231"
             fill="none"
-            className="hero_text w-full h-full"
+            className="hero_text w-full h-auto"
           >
             <path
               d="M166.721 225.89H216.953L134.363 4.62257H83.2064L0 225.89H47.1503L64.0998 178.432H150.08L166.721 225.89ZM107.552 55.7791L137.137 141.143H77.3511L107.552 55.7791Z"
@@ -106,4 +106,4 @@ const PosdcastHeroSection = () => {
   )
 }
 
-export default PosdcastHeroSection
+export default AuthorsHeroSection

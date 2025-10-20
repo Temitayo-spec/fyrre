@@ -142,19 +142,22 @@ const MagazineCoreSection: FC<{magazines: MagazineQueryResult}> = ({magazines}) 
 
   return (
     <section aria-label="Magazine archive">
-      <div className="wrapper space-y-12 pb-48">
+      <div className="wrapper space-y-8 md:space-y-12 pb-24 md:pb-48">
         <motion.header
-          className="flex items-center justify-between flex-wrap gap-4"
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 md:gap-6"
           variants={headerContainerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{once: true, amount: 0.3}}
         >
-          <motion.h3 className="font-semibold text-base uppercase" variants={headerVariants}>
+          <motion.h3
+            className="font-semibold text-sm md:text-base uppercase"
+            variants={headerVariants}
+          >
             Categories
           </motion.h3>
           <motion.nav
-            className="flex flex-wrap gap-3"
+            className="flex flex-wrap gap-2 md:gap-3"
             role="tablist"
             aria-label="Magazine categories"
             variants={categoryContainerVariants}
@@ -195,9 +198,9 @@ const MagazineCoreSection: FC<{magazines: MagazineQueryResult}> = ({magazines}) 
                 initial={{opacity: 0}}
                 animate={{opacity: 1}}
                 exit={{opacity: 0}}
-                className="col-span-full p-12 text-center"
+                className="col-span-full p-8 md:p-12 text-center"
               >
-                <p className="text-lg">No magazines found in this category.</p>
+                <p className="text-base md:text-lg">No magazines found in this category.</p>
               </motion.div>
             )}
           </motion.div>
@@ -205,7 +208,7 @@ const MagazineCoreSection: FC<{magazines: MagazineQueryResult}> = ({magazines}) 
 
         {(hasPrevPage || hasNextPage) && (
           <motion.nav
-            className="flex items-center justify-between mt-24"
+            className="flex items-center justify-between mt-12 md:mt-24"
             aria-label="Pagination"
             initial="hidden"
             whileInView="visible"

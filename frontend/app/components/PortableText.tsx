@@ -10,7 +10,7 @@
 import {PortableText, type PortableTextComponents, type PortableTextBlock} from 'next-sanity'
 import Image from 'next/image'
 import ResolvedLink from '@/app/components/ResolvedLink'
-import { LineReveal } from './shared/LineReveal'
+import {LineReveal} from './shared/LineReveal'
 
 export default function CustomPortableText({
   className,
@@ -21,15 +21,20 @@ export default function CustomPortableText({
 }) {
   const components: PortableTextComponents = {
     block: {
-      normal: ({ children }) => <p className="text-xl leading-[180%] mb-6">
-        <LineReveal text={children as string} className="text-xl leading-[180%] mb-6" />
-      </p>,
+      normal: ({children}) => (
+        <p className="text-base md:text-xl leading-[180%] mb-4 md:mb-6">
+          <LineReveal
+            text={children as string}
+            className="text-base md:text-xl leading-[180%] mb-4 md:mb-6"
+          />
+        </p>
+      ),
       h1: ({children, value}) => (
-        <h1 className="text-4xl font-bold mb-6 group relative" id={value?._key}>
+        <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 group relative" id={value?._key}>
           {children}
           <a
             href={`#${value?._key}`}
-            className="absolute left-0 top-0 bottom-0 -ml-6 flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute left-0 top-0 bottom-0 -ml-4 md:-ml-6 flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
             aria-label="Link to this section"
           >
             #
@@ -37,11 +42,11 @@ export default function CustomPortableText({
         </h1>
       ),
       h2: ({children, value}) => (
-        <h2 className="text-3xl font-bold mb-6 group relative" id={value?._key}>
+        <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-6 group relative" id={value?._key}>
           {children}
           <a
             href={`#${value?._key}`}
-            className="absolute left-0 top-0 bottom-0 -ml-6 flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute left-0 top-0 bottom-0 -ml-4 md:-ml-6 flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
             aria-label="Link to this section"
           >
             #
@@ -49,11 +54,14 @@ export default function CustomPortableText({
         </h2>
       ),
       h3: ({children, value}) => (
-        <h3 className="text-2xl font-semibold mb-4 group relative" id={value?._key}>
+        <h3
+          className="text-lg md:text-2xl font-semibold mb-3 md:mb-4 group relative"
+          id={value?._key}
+        >
           {children}
           <a
             href={`#${value?._key}`}
-            className="absolute left-0 top-0 bottom-0 -ml-6 flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute left-0 top-0 bottom-0 -ml-4 md:-ml-6 flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
             aria-label="Link to this section"
           >
             #
@@ -61,7 +69,9 @@ export default function CustomPortableText({
         </h3>
       ),
       blockquote: ({children}) => (
-        <blockquote className="border-l-4 border-black pl-6 italic my-8">{children}</blockquote>
+        <blockquote className="border-l-2 md:border-l-4 border-black pl-4 md:pl-6 italic my-6 md:my-8">
+          {children}
+        </blockquote>
       ),
     },
     marks: {
@@ -74,15 +84,24 @@ export default function CustomPortableText({
     },
     types: {
       quote: ({value}) => (
-        <div className="my-12 py-12 border-t border-b border-black flex gap-6">
-          <span className="text-[6rem] font-semibold leading-[100%]">“</span>
-          <div className="flex flex-col gap-6">
-            <div className="text-[3rem] font-semibold leading-[120%]">
-              <LineReveal text={value.text} className="text-[3rem] font-semibold leading-[120%]" />
+        <div className="my-8 md:my-12 py-8 md:py-12 border-t border-b border-black flex gap-3 md:gap-6">
+          <span className="text-[3rem] md:text-[6rem] font-semibold leading-[100%]">“</span>
+          <div className="flex flex-col gap-4 md:gap-6">
+            <div className="text-xl md:text-[3rem] font-semibold leading-[120%]">
+              <LineReveal
+                text={value.text}
+                className="text-xl md:text-[3rem] font-semibold leading-[120%]"
+              />
             </div>
-            {value.attribution && <p className="text-sm leading-[160%]">
-              <LineReveal text={value.attribution} className="text-sm leading-[160%]" delay={0.3} />
-            </p>}
+            {value.attribution && (
+              <p className="text-xs md:text-sm leading-[160%]">
+                <LineReveal
+                  text={value.attribution}
+                  className="text-xs md:text-sm leading-[160%]"
+                  delay={0.3}
+                />
+              </p>
+            )}
           </div>
         </div>
       ),
@@ -90,21 +109,21 @@ export default function CustomPortableText({
         if (!value?.asset) return null
 
         return (
-          <figure className="my-8">
+          <figure className="my-6 md:my-8">
             <div className="relative w-full h-auto">
               <Image
                 src={value.asset.url}
                 alt={value.alt || 'Article image'}
                 width={value.asset.metadata?.dimensions?.width || 800}
                 height={value.asset.metadata?.dimensions?.height || 600}
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover rounded md:rounded-lg"
                 quality={90}
                 placeholder={value.asset.metadata?.lqip ? 'blur' : undefined}
                 blurDataURL={value.asset.metadata?.lqip}
               />
             </div>
             {value.caption && (
-              <figcaption className="text-sm text-gray-600 mt-2 text-center italic">
+              <figcaption className="text-xs md:text-sm text-gray-600 mt-2 text-center italic px-2">
                 {value.caption}
               </figcaption>
             )}
@@ -114,17 +133,19 @@ export default function CustomPortableText({
     },
     list: {
       bullet: ({children}) => (
-        <ul className="list-disc list-inside space-y-2 mb-6 text-xl leading-[180%]">{children}</ul>
+        <ul className="list-disc list-inside space-y-2 mb-4 md:mb-6 text-base md:text-xl leading-[180%]">
+          {children}
+        </ul>
       ),
       number: ({children}) => (
-        <ol className="list-decimal list-inside space-y-2 mb-6 text-xl leading-[180%]">
+        <ol className="list-decimal list-inside space-y-2 mb-4 md:mb-6 text-base md:text-xl leading-[180%]">
           {children}
         </ol>
       ),
     },
     listItem: {
-      bullet: ({children}) => <li className="ml-4">{children}</li>,
-      number: ({children}) => <li className="ml-4">{children}</li>,
+      bullet: ({children}) => <li className="ml-2 md:ml-4">{children}</li>,
+      number: ({children}) => <li className="ml-2 md:ml-4">{children}</li>,
     },
   }
 

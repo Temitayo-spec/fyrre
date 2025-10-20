@@ -69,10 +69,10 @@ const lineVariants: Variants = {
 
 const AuthorsSection: FC<{props: AuthorsSectionType}> = ({props}) => {
   return (
-    <section className="my-48">
-      <div className="wrapper flex flex-col gap-24">
+    <section className="my-24 md:my-48">
+      <div className="wrapper flex flex-col gap-12 md:gap-24">
         <motion.header
-          className="flex justify-between items-center pt-12 relative"
+          className="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-8 md:pt-12 relative gap-6"
           variants={headerVariants}
           initial="hidden"
           whileInView="visible"
@@ -80,7 +80,7 @@ const AuthorsSection: FC<{props: AuthorsSectionType}> = ({props}) => {
         >
           <div className="overflow-hidden">
             <motion.h2
-              className="text-[6.5rem] font-semibold leading-[110%] uppercase"
+              className="text-[12vw] sm:text-[10vw] md:text-[8vw] lg:text-[6.5rem] font-semibold leading-[110%] uppercase"
               variants={maskedTextVariants}
             >
               {props?.sectionTitle}
@@ -132,31 +132,33 @@ const AuthorCard: FC<Author> = ({image, name, slug, city, job}) => {
   return (
     <Link href={`/authors/${slug}`}>
       <motion.div
-        className="border-[0.5px] border-black p-8 flex items-center gap-12 group hover:shadow-lg transition-shadow duration-300"
+        className="border-[0.5px] border-black p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 md:gap-12 group hover:shadow-lg transition-shadow duration-300"
         transition={{duration: 0.3, ease: 'easeOut'}}
       >
-        <div className="w-[9.375rem] h-[9.375rem] rounded-full overflow-hidden">
+        <div className="w-[7rem] h-[7rem] sm:w-[8rem] sm:h-[8rem] md:w-[9.375rem] md:h-[9.375rem] rounded-full overflow-hidden flex-shrink-0">
           <Image
             src={(image?.asset as any)?.url}
             alt={(image?.alt as string) || ''}
-            className="object-cover group-hover:brightness-110 transition-all duration-300"
+            className="object-cover w-full h-full group-hover:brightness-110 transition-all duration-300"
             quality={100}
             width={400}
             height={500}
             priority
-            placeholder='blur'
+            placeholder="blur"
             blurDataURL={(image?.asset as any)?.metadata?.lqip as string}
           />
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-[2rem] font-semibold leading-[120%]">{name}</h3>
-          <div className="flex gap-4">
-            <p className="flex gap-2 text-sm leading-[160%]">
+        <div className="space-y-3 md:space-y-4 text-center sm:text-left">
+          <h3 className="text-xl sm:text-2xl md:text-[2rem] font-semibold leading-[120%]">
+            {name}
+          </h3>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <p className="flex gap-2 text-xs sm:text-sm leading-[160%] justify-center sm:justify-start">
               <span className="font-semibold">Job</span>
               {job}
             </p>
-            <p className="flex gap-2 text-sm leading-[160%]">
+            <p className="flex gap-2 text-xs sm:text-sm leading-[160%] justify-center sm:justify-start">
               <span className="font-semibold">City</span>
               {city}
             </p>

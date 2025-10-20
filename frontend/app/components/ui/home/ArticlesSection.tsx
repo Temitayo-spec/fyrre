@@ -1,5 +1,5 @@
 'use client'
-import {FC, useRef, useEffect} from 'react'
+import {FC, useRef, useEffect, useState} from 'react'
 import {motion, AnimatePresence, Variants} from 'framer-motion'
 import Image from 'next/image'
 import LinkWithSVG from '../../shared/LinkWithSVG'
@@ -63,9 +63,21 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const leftColumnRef = useRef<HTMLDivElement>(null)
   const sidebarRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    if (!containerRef.current || !sidebarRef.current || !leftColumnRef.current) return
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    if (!containerRef.current || !sidebarRef.current || !leftColumnRef.current || isMobile) return
 
     const ctx = gsap.context(() => {
       const leftHeight = leftColumnRef.current!.offsetHeight
@@ -91,13 +103,13 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
     }, containerRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [isMobile])
 
   return (
-    <section className="pt-12" ref={containerRef}>
+    <section className="pt-8 md:pt-12" ref={containerRef}>
       <div className="wrapper">
-        <div className="flex gap-24 items-start">
-          <div className="w-3/4" ref={leftColumnRef}>
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-24 items-start">
+          <div className="w-full lg:w-3/4" ref={leftColumnRef}>
             <AnimatePresence>
               {props?.articles?.map((article, index) => {
                 const articleData = article as unknown as ArticleRowType
@@ -124,37 +136,37 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
               initial="hidden"
               whileInView="visible"
               viewport={{once: true, amount: 0.3}}
-              className="mt-24"
+              className="mt-12 md:mt-24"
             >
               <LinkWithSVG href={props.allArticlesLinkUrl!} text={props.allArticlesLinkText!} />
             </motion.div>
           </div>
 
-          <div className="w-1/4">
+          <div className="w-full lg:w-1/4">
             <div ref={sidebarRef}>
               <motion.div
-                className="space-y-2 mb-8"
+                className="space-y-2 mb-6 md:mb-8"
                 initial={{opacity: 0, y: 20}}
                 whileInView={{opacity: 1, y: 0}}
                 transition={{duration: 0.5}}
                 viewport={{once: true, amount: 0.3}}
               >
-                <h3 className="font-semibold text-base uppercase">
+                <h3 className="font-semibold text-sm md:text-base uppercase">
                   {props.sidebar?.printMagazine?.label}
                 </h3>
-                <h2 className="text-[3rem] font-semibold leading-[120%]">
+                <h2 className="text-4xl md:text-[3rem] font-semibold leading-[120%]">
                   {props.sidebar?.printMagazine?.issue}
                 </h2>
               </motion.div>
 
               <motion.div
-                className="space-y-4 mb-16"
+                className="space-y-4 mb-12 md:mb-16"
                 variants={magazineVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{once: true, amount: 0.3}}
               >
-                <div className="max-w-[23.0625rem] max-h-[28.82813rem] overflow-hidden">
+                <div className="w-full max-w-[23.0625rem] aspect-[4/5] overflow-hidden mx-auto lg:mx-0">
                   <Image
                     src={(props.sidebar?.printMagazine?.coverImage as any).asset.url}
                     alt="magazine cover"
@@ -174,14 +186,14 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
                 </div>
                 <button
                   type="button"
-                  className="min-h-[3.125rem] py-1 px-6 inline-flex items-center justify-center bg-black text-white text-sm font-medium cursor-pointer border border-black hover:bg-white hover:text-black transition-colors duration-300 uppercase"
+                  className="min-h-[3.125rem] w-full lg:w-auto py-1 px-6 inline-flex items-center justify-center bg-black text-white text-sm font-medium cursor-pointer border border-black hover:bg-white hover:text-black transition-colors duration-300 uppercase"
                 >
                   {props.sidebar?.printMagazine?.buttonText}
                 </button>
               </motion.div>
 
-              <div className="space-y-8">
-                <h3 className="font-semibold text-base uppercase">Most Popular</h3>
+              <div className="space-y-6 md:space-y-8">
+                <h3 className="font-semibold text-sm md:text-base uppercase">Most Popular</h3>
                 <div>
                   {props.sidebar?.mostPopular?.articles?.map((article, index) => (
                     <motion.div
@@ -203,26 +215,26 @@ const ArticlesSection: FC<{props: ArticleSectionType}> = ({props}) => {
               </div>
 
               <motion.form
-                className="p-[1.875rem] bg-off-white mt-16"
+                className="p-6 md:p-[1.875rem] bg-off-white mt-12 md:mt-16"
                 variants={newsletterVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{once: true, amount: 0.3}}
               >
-                <h3 className="font-semibold text-base uppercase mb-2">
+                <h3 className="font-semibold text-sm md:text-base uppercase mb-2">
                   {props.sidebar?.newsletter?.label}
                 </h3>
-                <h2 className="text-[2rem] font-semibold leading-[130%] mb-4">
+                <h2 className="text-2xl md:text-[2rem] font-semibold leading-[130%] mb-4">
                   {props.sidebar?.newsletter?.heading}
                 </h2>
                 <input
                   type="email"
-                  className="w-full h-[3.0625rem] mb-3 px-[0.9375rem] bg-white placeholder:text-gwhite/60 text-base"
+                  className="w-full h-[3.0625rem] mb-3 px-[0.9375rem] bg-white placeholder:text-gwhite/60 text-sm md:text-base"
                   placeholder={props.sidebar?.newsletter?.placeholder}
                 />
                 <button
                   type="submit"
-                  className="min-h-[3.125rem] py-1 px-6 inline-flex items-center justify-center bg-black text-white text-sm font-medium cursor-pointer border border-black hover:bg-white hover:text-black transition-colors duration-300 uppercase"
+                  className="min-h-[3.125rem] w-full lg:w-auto py-1 px-6 inline-flex items-center justify-center bg-black text-white text-sm font-medium cursor-pointer border border-black hover:bg-white hover:text-black transition-colors duration-300 uppercase"
                 >
                   {props.sidebar?.newsletter?.buttonText}
                 </button>
@@ -252,45 +264,45 @@ const ArticleRow: FC<ArticleRowType> = ({
   return (
     <Link href={`/magazine/${slug}`}>
       <article
-        className="flex gap-12 relative"
+        className="flex flex-col md:flex-row gap-6 md:gap-12 relative"
         style={{
-          paddingTop: isFirst ? '0' : '3rem',
-          paddingBottom: isLast ? '0' : '3rem',
+          paddingTop: isFirst ? '0' : '2rem',
+          paddingBottom: isLast ? '0' : '2rem',
         }}
       >
-        <div className="flex-shrink-0 w-[15rem] h-[15rem] aspect-square">
+        <div className="flex-shrink-0 w-full md:w-[15rem] md:h-[15rem] aspect-square">
           <Image
             src={(thumbnail?.asset as any)?.url}
             alt={thumbnail?.alt}
-            className="object-cover"
+            className="object-cover w-full h-full"
             quality={100}
             width={500}
             height={500}
           />
         </div>
-        <div className="flex flex-col justify-between">
-          <div className="flex flex-col">
-            <h3 className="text-[2rem] font-semibold leading-[120%]">{title}</h3>
-            <p className="text-base leading-[180%]">{excerpt}</p>
+        <div className="flex flex-col justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-2xl md:text-[2rem] font-semibold leading-[120%]">{title}</h3>
+            <p className="text-sm md:text-base leading-[180%]">{excerpt}</p>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 flex-wrap">
               <div className="flex items-center gap-2">
-                <h4 className="text-sm font-semibold leading-[160%]">Text</h4>
-                <p className="text-sm leading-[160%]">{(author as any).name}</p>
+                <h4 className="text-xs md:text-sm font-semibold leading-[160%]">Text</h4>
+                <p className="text-xs md:text-sm leading-[160%]">{(author as any).name}</p>
               </div>
               <div className="flex items-center gap-2">
-                <h4 className="text-sm font-semibold leading-[160%]">Date</h4>
-                <p className="text-sm leading-[160%]">{formatDate(publishedAt)}</p>
+                <h4 className="text-xs md:text-sm font-semibold leading-[160%]">Date</h4>
+                <p className="text-xs md:text-sm leading-[160%]">{formatDate(publishedAt)}</p>
               </div>
               <div className="flex items-center gap-2">
-                <h4 className="text-sm font-semibold leading-[160%]">Duration</h4>
-                <p className="text-sm leading-[160%]">{duration} min</p>
+                <h4 className="text-xs md:text-sm font-semibold leading-[160%]">Duration</h4>
+                <p className="text-xs md:text-sm leading-[160%]">{duration} min</p>
               </div>
             </div>
 
-            <div className="grid place-items-center text-xs uppercase py-2 px-3 border border-black rounded-[3.75rem]">
+            <div className="grid place-items-center text-[0.625rem] md:text-xs uppercase py-1.5 md:py-2 px-2.5 md:px-3 border border-black rounded-[3.75rem] w-fit">
               {category}
             </div>
           </div>
@@ -320,16 +332,18 @@ const MostPopularArticleRow: FC<MostPopularType> = ({
   return (
     <Link href={`/magazine/${slug}`}>
       <article
-        className="flex gap-4 relative"
+        className="flex gap-3 md:gap-4 relative"
         style={{
           paddingTop: isFirst ? '0' : '1.5rem',
           paddingBottom: isLast ? '0' : '1.5rem',
         }}
       >
-        <div className="min-w-[3.125rem] text-2xl font-semibold leading-[120%]">0{position}</div>
-        <div className="flex flex-col gap-4">
-          <h3 className="text-2xl font-semibold leading-[120%]">{title}</h3>
-          <p className="text-sm leading-[160%]">
+        <div className="min-w-[2.5rem] md:min-w-[3.125rem] text-xl md:text-2xl font-semibold leading-[120%]">
+          0{position}
+        </div>
+        <div className="flex flex-col gap-3 md:gap-4">
+          <h3 className="text-xl md:text-2xl font-semibold leading-[120%]">{title}</h3>
+          <p className="text-xs md:text-sm leading-[160%]">
             <span className="mr-2 font-semibold">Text</span>
             {(author as any).name}
           </p>

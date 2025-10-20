@@ -1,8 +1,8 @@
 'use client'
 import gsap from 'gsap'
 import DrawSVGPlugin from 'gsap/DrawSVGPlugin'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { SplitText } from 'gsap/SplitText'
+import {ScrollTrigger} from 'gsap/ScrollTrigger'
+import {SplitText} from 'gsap/SplitText'
 import {useEffect, useRef} from 'react'
 gsap.registerPlugin(DrawSVGPlugin, SplitText, ScrollTrigger)
 
@@ -62,14 +62,14 @@ const MagazineHeroSection = () => {
   return (
     <section ref={sectionRef} className="overflow-hidden">
       <div className="wrapper">
-        <div className="pt-12 pb-24">
+        <div className="pt-8 pb-16 md:pt-12 md:pb-24">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="1520"
             height="215"
             viewBox="0 0 1520 215"
             fill="none"
-            className="w-full h-full hero_text"
+            className="w-full h-auto hero_text"
           >
             <path
               d="M93.591 210.436H130.051L184.598 72.3465V210.436H224.217V4.30633H171.966L111.965 157.038L52.2502 4.30633H0V210.436H39.6183V73.4948L93.591 210.436Z"

@@ -136,7 +136,7 @@ button {
   width: 100vw;
   height: 100svh;
   display: flex;
-  z-index: 2;
+  z-index: 100;
   pointer-events: none;
 }
 
@@ -154,7 +154,7 @@ button {
   left: 0;
   width: 100vw;
   height: 100svh;
-  z-index: 2;
+  z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -3,7 +3,7 @@
 import {motion, Variants, useInView} from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import {ArrorwRight} from '../../shared/Icons'
+import {ArrowRight} from '../../shared/Icons'
 import {FC, useRef} from 'react'
 import {AuthorsQueryResult} from '@/sanity.types'
 
@@ -46,13 +46,13 @@ const AuthorItem: FC<{
       animate={isInView ? 'visible' : 'hidden'}
       variants={itemVariants}
     >
-      <div className="flex items-center justify-between relative py-12">
-        <div className="flex items-center gap-12">
-          <div className="">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between relative py-8 md:py-12 gap-6 md:gap-0">
+        <div className="flex flex-row items-center gap-4 md:gap-12">
+          <div className="flex-shrink-0">
             <Image
               src={author?.image?.asset?.url as string}
               alt="author photo"
-              className="object-cover h-[9.375rem] w-[9.375rem] group-hover:brightness-110 transition-all duration-300 rounded-full"
+              className="object-cover h-[6rem] w-[6rem] sm:h-[7.5rem] sm:w-[7.5rem] md:h-[9.375rem] md:w-[9.375rem] group-hover:brightness-110 transition-all duration-300 rounded-full"
               quality={100}
               width={200}
               height={200}
@@ -60,24 +60,27 @@ const AuthorItem: FC<{
               blurDataURL={author?.image?.asset?.metadata?.lqip as string}
             />
           </div>
-          <h2 className="max-w-[32.375rem] text-[2rem] font-semibold leading-[120%]">
+          <h2 className="max-w-full md:max-w-[32.375rem] text-xl sm:text-[1.5rem] md:text-[2rem] font-semibold leading-[120%]">
             {author.name}
           </h2>
         </div>
 
-        <div className="flex items-center gap-16">
-          <p className="flex gap-2 text-sm leading-[160%]">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 md:gap-16">
+          <p className="flex gap-2 text-xs sm:text-sm leading-[160%]">
             <span className="font-semibold">Job</span>
-            {author.job}
+            <span className="text-gray-700">{author.job}</span>
           </p>
-          <p className="flex gap-2 text-sm leading-[160%]">
+          <p className="flex gap-2 text-xs sm:text-sm leading-[160%]">
             <span className="font-semibold">City</span>
-            {author.city}
+            <span className="text-gray-700">{author.city}</span>
           </p>
 
-          <Link href={`/authors/${author.slug}`} className="inline-flex items-center gap-2">
-            <span className="text-base uppercase font-semibold">About</span>
-            <ArrorwRight />
+          <Link
+            href={`/authors/${author.slug}`}
+            className="inline-flex items-center gap-2 self-end sm:self-auto"
+          >
+            <span className="text-sm md:text-base uppercase font-semibold">About</span>
+            <ArrowRight />
           </Link>
         </div>
 
