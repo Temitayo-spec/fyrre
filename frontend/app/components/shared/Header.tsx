@@ -157,7 +157,6 @@ const Header: FC<{navbar: NavbarType}> = ({navbar}) => {
           </motion.div>
         </div>
 
-        {/* Desktop Navigation */}
         <ul className="hidden lg:flex items-center gap-6">
           {navbar?.navLinks?.map((link, idx) => {
             const isActive =
@@ -303,7 +302,7 @@ const Header: FC<{navbar: NavbarType}> = ({navbar}) => {
                           <Link
                             href={link.url}
                             className={`text-2xl font-medium text-black ${
-                              isActive ? 'underline' : ''
+                              isActive ? 'underline pointer-events-none' : ''
                             }`}
                             onClick={closeMobileMenu}
                           >
